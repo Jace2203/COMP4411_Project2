@@ -83,6 +83,8 @@ public:
 
 	// gluLookAt equivalent
 	void lookAt(Vec3f eye, Vec3f at, Vec3f up);
+
+    void calculateUpVector();
 };
 
 #endif

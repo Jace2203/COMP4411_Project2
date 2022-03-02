@@ -4,6 +4,8 @@
 
 #include "camera.h"
 
+#include "math.h"
+
 #pragma warning(push)
 #pragma warning(disable : 4244)
 
@@ -15,6 +17,7 @@ const float kMouseRotationSensitivity		= 1.0f/90.0f;
 const float kMouseTranslationXSensitivity	= 0.03f;
 const float kMouseTranslationYSensitivity	= 0.03f;
 const float kMouseZoomSensitivity			= 0.08f;
+const float kMouseTwistSensitivity			= 1.0f;
 
 void MakeDiagonal(Mat4f &m, float k)
 {
@@ -95,6 +98,7 @@ void Camera::calculateViewingTransformParameters()
 		mUpVector= Vec3f(0,-1,0);
 	else
 		mUpVector= Vec3f(0,1,0);
+	calculateUpVector();
 
 	mDirtyTransform = false;
 }
@@ -159,7 +163,11 @@ void Camera::dragMouse( int x, int y )
 			break;
 		}
 	case kActionTwist:
-		// Not implemented
+		{
+			float dTwist = -mouseDelta[0] * kMouseTwistSensitivity;
+			setTwist(getTwist() + dTwist);
+			break;
+		}
 	default:
 		break;
 	}
@@ -187,11 +195,16 @@ void Camera::applyViewingTransform() {
 
 void Camera::lookAt(Vec3f eye, Vec3f at, Vec3f up)
 {
-	Vec3f F = eye - at;
-	Vec3f f = F / F.length();
-	Vec3f right = up ^ f;
-	Vec3f r = right / right.length();
+	Vec3f f = eye - at;
+	f.normalize();
+	Vec3f r = up ^ f;
+	r.normalize();
 	Vec3f u = f ^ r;
+	u.normalize();
+	// Vec3f a = u * cos(mTwist * M_PI / 180);
+	// Vec3f b = r * sin(mTwist * M_PI / 180);
+	// u = a + b;
+	// std::cout << u.length() << std::endl;
 	
 	GLfloat M[16] = {
 		 r[0],	 u[0],	 f[0],	0,
@@ -202,6 +215,19 @@ void Camera::lookAt(Vec3f eye, Vec3f at, Vec3f up)
 
 	glMultMatrixf(M);
 	glTranslated(-eye[0], -eye[1], -eye[2]);
+}
+
+void Camera::calculateUpVector()
+{
+	Vec3f f = mPosition - mLookAt;
+	f.normalize();
+	Vec3f r = mUpVector ^ f;
+	r.normalize();
+	Vec3f u = f ^ r;
+	u.normalize();
+	Vec3f a = u * cos(mTwist * M_PI / 180);
+	Vec3f b = r * sin(mTwist * M_PI / 180);
+	mUpVector = a - b;
 }
 
 #pragma warning(pop)
