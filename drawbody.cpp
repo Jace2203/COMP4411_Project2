@@ -7,10 +7,10 @@ void drawTorso()
 {
 	glPushMatrix();
 		glScaled(1.0, 0.8, 1.0);
-		drawCylinder(torso_height, 0.6, 0.5);
+		drawCylinder(torso_height, 0.5, 0.4);
         glTranslated(0.0, 0.0, torso_height);
         glScaled(1.0, 1.0, 0.5);
-        drawSphere(0.5);
+        drawSphere(0.4);
 	glPopMatrix();
 }
 
@@ -18,7 +18,7 @@ void drawHead()
 {
     glPushMatrix();
         glRotated(90.0, 1.0, 0.0, 0.0);
-        glTranslated(0.0, head_size + torso_height + 0.24, 0.0);
+        glTranslated(0.0, head_size + torso_height + 0.2, 0.0);
         drawSphere(head_size);
     glPopMatrix();
 }
@@ -26,7 +26,7 @@ void drawHead()
 void drawArmL(double upper_y, double upper_z, double lower_x, double lower_z)
 {
     glPushMatrix();
-		glTranslated(-0.6, 0.0, torso_height);
+		glTranslated(-0.5, 0.0, torso_height);
 		glRotated(180.0, 1.0, 0.0, 0.0);
 		glRotated(-upper_y, 0.0, 1.0, 0.0);
 		glRotated(upper_z, 0.0, 0.0, 1.0);
@@ -46,7 +46,7 @@ void drawArmL(double upper_y, double upper_z, double lower_x, double lower_z)
 void drawArmR(double upper_y, double upper_z, double lower_x, double lower_z)
 {
 	glPushMatrix();
-		glTranslated(0.6, 0.0, torso_height);
+		glTranslated(0.5, 0.0, torso_height);
 		glRotated(180.0, 1.0, 0.0, 0.0);
 		glRotated(upper_y, 0.0, 1.0, 0.0);
 		glRotated(upper_z, 0.0, 0.0, 1.0);
@@ -63,38 +63,31 @@ void drawArmR(double upper_y, double upper_z, double lower_x, double lower_z)
 	glPopMatrix();
 }
 
-void drawLegL()
+void drawLegL(double leg_x)
 {
     glPushMatrix();
         glTranslated(-0.3, 0.0, 0.0);
-        glRotated(180.0, 1.0, 0.0, 0.0);
-        drawSphere(0.2);
-        drawCylinder(leg_length, 0.2, 0.18);
+        glRotated(180.0 + leg_x, 1.0, 0.0, 0.0);
+        drawSphere(0.15);
+        drawCylinder(leg_length, 0.15, 0.12);
     glPopMatrix();
 }
 
-void drawLegR()
+void drawLegR(double leg_x)
 {
     glPushMatrix();
         glTranslated(0.3, 0.0, 0.0);
-        glRotated(180.0, 1.0, 0.0, 0.0);
-        drawSphere(0.2);
-        drawCylinder(leg_length, 0.2, 0.18);
+        glRotated(180.0 + leg_x, 1.0, 0.0, 0.0);
+        drawSphere(0.15);
+        drawCylinder(leg_length, 0.15, 0.12);
     glPopMatrix();
 }
 
-void drawEquipment(double back_y)
+void drawEquipment(double back_y, double l_equip_y, double r_equip_y, double l_turret_y, double r_turret_y, double l_turret_x, double r_turret_x)
 {
     glPushMatrix();
         glRotated(90.0, 1.0, 0.0, 0.0);
         glTranslated(0.0, 0.3, -0.55);
-        drawBack(back_y);
-    glPopMatrix();
-}
-
-void drawBack(double back_y)
-{
-    glPushMatrix();
         // glScaled(0.8, 0.8, 0.8);
 
         // parts behind the back
@@ -117,14 +110,14 @@ void drawBack(double back_y)
         glPopMatrix();
 
         // Left Equipment
-        drawEquipmentL();
+        drawEquipmentL(l_equip_y, l_turret_y, l_turret_x);
         // Right Equipment
-        drawEquipmentR();
+        drawEquipmentR(r_equip_y, r_turret_y, r_turret_x);
 
     glPopMatrix();
 }
 
-void drawEquipmentL()
+void drawEquipmentL(double equip_y, double turret_y, double turret_x)
 {
     glPushMatrix();
         glTranslated(0.4, 0.0, -0.53);
@@ -134,7 +127,7 @@ void drawEquipmentL()
             drawCylinder(0.2, 0.1, 0.1);
         glPopMatrix();
 
-        glRotated(-5.0, 0.0, 1.0, 0.0);
+        glRotated(-equip_y, 0.0, 1.0, 0.0);
 
         glPushMatrix();
             glRotated(-90.0, 1.0, 0.0, 0.0);
@@ -152,38 +145,12 @@ void drawEquipmentL()
             drawShip();
         glPopMatrix();
 
-        glPushMatrix();
-            glTranslated(1.35, 0.4, 0.0);
-            glPushMatrix();
-                glRotated(-90.0, 1.0, 0.0, 0.0);
-                drawCylinder(0.4, 0.4, 0.4);
-            glPopMatrix();
-            
-            glTranslated(0.0, 0.4, -0.03);
-            glPushMatrix();
-                glRotated(180.0, 0.0, 1.0, 0.0);
-                glScaled(0.45, 0.45, 0.45);
-                drawTurret();
-            glPopMatrix();
-
-            glTranslated(0.0, -0.4, 1.4);
-            glPushMatrix();
-                glRotated(-90.0, 1.0, 0.0, 0.0);
-                drawCylinder(0.2, 0.4, 0.4);
-            glPopMatrix();
-
-            glTranslated(0.0, 0.2, 0.0);
-            glPushMatrix();
-                glRotated(180.0, 0.0, 1.0, 0.0);
-                glScaled(0.45, 0.45, 0.45);
-                drawTurret();
-            glPopMatrix();
-        glPopMatrix();
+        drawTurrets(LEFT, turret_y, turret_x);
 
     glPopMatrix();
 }
 
-void drawEquipmentR()
+void drawEquipmentR(double equip_y, double turret_y, double turret_x)
 {
     glPushMatrix();
         glTranslated(-0.2, 0.0, -0.53);
@@ -193,7 +160,7 @@ void drawEquipmentR()
             drawCylinder(0.2, 0.1, 0.1);
         glPopMatrix();
 
-        glRotated(5.0, 0.0, 1.0, 0.0);
+        glRotated(equip_y, 0.0, 1.0, 0.0);
 
         glPushMatrix();
             glRotated(-90.0, 1.0, 0.0, 0.0);
@@ -211,33 +178,59 @@ void drawEquipmentR()
             drawShip();
         glPopMatrix();
 
+        drawTurrets(RIGHT, turret_y, turret_x);
+
+    glPopMatrix();
+}
+
+void drawCompleteTurret(double turret_y, double turret_x)
+{
+    glPushMatrix();
+        glRotated(turret_y, 0.0, 1.0, 0.0);
+        drawTurret();
+        
+        glTranslated(0.0, 0.1, -1.2);
+        glRotated(-(180 - turret_x), 1.0, 0.0, 0.0);
+
         glPushMatrix();
-            glTranslated(-1.35, 0.4, 0.0);
-            glPushMatrix();
-                glRotated(-90.0, 1.0, 0.0, 0.0);
-                drawCylinder(0.4, 0.4, 0.4);
-            glPopMatrix();
+            glTranslated(-0.275, 0.0, 0.0);
+            drawCylinder(2.1, 0.1, 0.1);
+        glPopMatrix();
+        
+        glPushMatrix();
+            glTranslated(0.275, 0.0, 0.0);
+            drawCylinder(2.1, 0.1, 0.1);
+        glPopMatrix();
+    glPopMatrix();
+}
+
+void drawTurrets(int dir, double turret_y, double turret_x)
+{
+    glPushMatrix();
+        glTranslated(dir * 1.35, 0.4, 0.0);
+        glPushMatrix();
+            glRotated(-90.0, 1.0, 0.0, 0.0);
+            drawCylinder(0.4, 0.4, 0.4);
+        glPopMatrix();
             
-            glTranslated(0.0, 0.4, -0.03);
-            glPushMatrix();
-                glRotated(180.0, 0.0, 1.0, 0.0);
-                glScaled(0.45, 0.45, 0.45);
-                drawTurret();
-            glPopMatrix();
+          glTranslated(0.0, 0.4, -0.03);
+          glPushMatrix();
+              glRotated(180.0, 0.0, 1.0, 0.0);
+              glScaled(0.45, 0.45, 0.45);
+              drawCompleteTurret(double(dir) * turret_y, turret_x);
+          glPopMatrix();
 
-            glTranslated(0.0, -0.4, 1.4);
-            glPushMatrix();
-                glRotated(-90.0, 1.0, 0.0, 0.0);
-                drawCylinder(0.2, 0.4, 0.4);
-            glPopMatrix();
-
-            glTranslated(0.0, 0.2, 0.0);
-            glPushMatrix();
-                glRotated(180.0, 0.0, 1.0, 0.0);
-                glScaled(0.45, 0.45, 0.45);
-                drawTurret();
-            glPopMatrix();
+        glTranslated(0.0, -0.4, 1.4);
+        glPushMatrix();
+            glRotated(-90.0, 1.0, 0.0, 0.0);
+            drawCylinder(0.2, 0.4, 0.4);
         glPopMatrix();
 
+        glTranslated(0.0, 0.2, 0.0);
+        glPushMatrix();
+            glRotated(180.0, 0.0, 1.0, 0.0);
+            glScaled(0.45, 0.45, 0.45);
+            drawCompleteTurret(double(dir) * turret_y, turret_x);
+        glPopMatrix();
     glPopMatrix();
 }
