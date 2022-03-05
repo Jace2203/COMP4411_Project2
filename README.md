@@ -2,7 +2,7 @@
 
 ## Required
 
-- [ ] Build a character
+- [x] Build a character
 - [x] Implement glLookAt() equivalent
 
 ## TO-DO List
