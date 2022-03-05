@@ -7,6 +7,7 @@
 
 #include "modelerglobals.h"
 #include "complexshape.h"
+#include "drawbody.h"
 
 // To make a SampleModel, we inherit off of ModelerView
 class SampleModel : public ModelerView 
@@ -42,34 +43,34 @@ void SampleModel::draw()
 	// drawBox(10,0.01f,10);
 	// glPopMatrix();
 
-	// // draw the sample model
-	// setAmbientColor(.1f,.1f,.1f);
-	// setDiffuseColor(COLOR_GREEN);
-	// glPushMatrix();
-	// glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
+	glPushMatrix();
+	glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
 
-	// 	glPushMatrix();
-	// 	glTranslated(-1.5, 0, -2);
-	// 	glScaled(3, 1, 4);
-	// 	drawBox(1,1,1);
-	// 	glPopMatrix();
+	glPushMatrix();
+			// Torso
+		glPushMatrix();
+			glRotated(-90.0, 1.0, 0.0, 0.0);
 
-	// 	// draw cannon
-	// 	glPushMatrix();
-	// 	glRotated(VAL(ROTATE), 0.0, 1.0, 0.0);
-	// 	glRotated(-90, 1.0, 0.0, 0.0);
-	// 	drawCylinder(VAL(HEIGHT), 0.1, 0.1);
+			drawTorso();
+			
+			drawHead();
 
-	// 	glTranslated(0.0, 0.0, VAL(HEIGHT));
-	// 	drawCylinder(1, 1.0, 0.9);
+			drawArmL(VAL(L_UPPER_ARM_YROT), VAL(L_UPPER_ARM_ZROT), 45.0, 0.0);
+			drawArmR(VAL(R_UPPER_ARM_YROT), VAL(R_UPPER_ARM_ZROT), 45.0, 0.0);
 
-	// 	glTranslated(0.0, 0.0, 0.5);
-	// 	glRotated(90, 1.0, 0.0, 0.0);
-	// 	drawCylinder(4, 0.1, 0.2);
-	// 	glPopMatrix();
+			drawLegL();
+			drawLegR();
 
-	// glPopMatrix();
-	drawTurret();
+			drawEquipment(VAL(BACK_YROT));
+
+		glPopMatrix();
+
+
+	glPopMatrix();
+
+	glPopMatrix();
+
+	// drawTurret();
 }
 
 int main()
@@ -81,8 +82,13 @@ int main()
     controls[XPOS] = ModelerControl("X Position", -5, 5, 0.1f, 0);
     controls[YPOS] = ModelerControl("Y Position", 0, 5, 0.1f, 0);
     controls[ZPOS] = ModelerControl("Z Position", -5, 5, 0.1f, 0);
-    controls[HEIGHT] = ModelerControl("Height", 1, 2.5, 0.1f, 1);
-	controls[ROTATE] = ModelerControl("Rotate", -135, 135, 1, 0);
+	controls[L_UPPER_ARM_YROT] = ModelerControl("Left Upper Arm Y Rotation", 10, 135, 0.1f, 10);
+	controls[L_UPPER_ARM_ZROT] = ModelerControl("Left Upper Arm Z Rotation", -45, 45, 0.1f, 0);
+	controls[R_UPPER_ARM_YROT] = ModelerControl("Right Upper Arm Y Rotation", 10, 135, 0.1f, 10);
+	controls[R_UPPER_ARM_ZROT] = ModelerControl("Right Upper Arm Z Rotation", -45, 45, 0.1f, 0);
+	controls[L_LEG_XROT] = ModelerControl("Left Leg X Rotation", -30, 30, 0.1f, 0);
+	controls[R_LEG_XROT] = ModelerControl("Right Leg X Rotation", -30, 30, 0.1f, 0);
+	controls[BACK_YROT] = ModelerControl("Back Equipment Y Rotation", -15, 15, 0.1f, 0);
 
     ModelerApplication::Instance()->Init(&createSampleModel, controls, NUMCONTROLS);
     return ModelerApplication::Instance()->Run();

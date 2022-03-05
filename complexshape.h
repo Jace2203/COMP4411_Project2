@@ -3,4 +3,6 @@
 
 void drawTurret();
 
+void drawShip();
+
 #endif
