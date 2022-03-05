@@ -9,7 +9,7 @@
 |BW|Task|Done|
 |-|-|-|
 |W|dramatic light|
-|W|adjustable LoD|
+|W|adjustable LoD|✔|
 |W|your ideas|
 |B|texture map|
 |B|polygonal faces (triangles)|✔

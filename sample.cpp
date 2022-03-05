@@ -46,27 +46,27 @@ void SampleModel::draw()
 	glPushMatrix();
 	glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
 
-	glPushMatrix();
-			// Torso
+		int lod = int(VAL(LOD));
+		// Torso
 		glPushMatrix();
 			glRotated(-90.0, 1.0, 0.0, 0.0);
 
 			drawTorso();
-			
-			drawHead();
 
-			drawArmL(VAL(L_UPPER_ARM_YROT), VAL(L_UPPER_ARM_ZROT), 45.0, 0.0);
-			drawArmR(VAL(R_UPPER_ARM_YROT), VAL(R_UPPER_ARM_ZROT), 45.0, 0.0);
+			if (lod > 0)
+			{
+				drawHead();
 
-			drawLegL(VAL(L_LEG_XROT));
-			drawLegR(VAL(R_LEG_XROT));
+				drawArmL(VAL(L_UPPER_ARM_YROT), VAL(L_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
+				drawArmR(VAL(R_UPPER_ARM_YROT), VAL(R_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
 
-			drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT));
+				drawLegL(VAL(L_LEG_XROT));
+				drawLegR(VAL(R_LEG_XROT));
+
+				drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), lod);
+			}
 
 		glPopMatrix();
-
-
-	glPopMatrix();
 
 	glPopMatrix();
 
@@ -80,6 +80,7 @@ int main()
 	// stepsize, defaultvalue)
     ModelerControl controls[NUMCONTROLS];
 
+	controls[LOD] = ModelerControl("Change Level of Detail", 0, 4, 1, 4);
 	// Whole body
     controls[XPOS] = ModelerControl("X Position", -5, 5, 0.1f, 0);
     controls[YPOS] = ModelerControl("Y Position", 0, 5, 0.1f, 0);

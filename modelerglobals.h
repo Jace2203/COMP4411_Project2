@@ -9,7 +9,8 @@
 // We'll use these constants to access the values 
 // of the controls from the user interface.
 enum SampleModelControls
-{ 
+{
+	LOD,
 	XPOS, YPOS, ZPOS,
 	L_UPPER_ARM_YROT, R_UPPER_ARM_YROT,
 	L_UPPER_ARM_ZROT, R_UPPER_ARM_ZROT,
