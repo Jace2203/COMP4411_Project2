@@ -42,33 +42,39 @@ void SampleModel::draw()
 	// glTranslated(-5,0,-5);
 	// drawBox(10,0.01f,10);
 	// glPopMatrix();
-
-	glPushMatrix();
-	glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
-
-		int lod = int(VAL(LOD));
-		// Torso
+	if (VAL(DLS))
+	{
+		
+	}
+	else
+	{
 		glPushMatrix();
-			glRotated(-90.0, 1.0, 0.0, 0.0);
+		glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
 
-			drawTorso();
+			int lod = int(VAL(LOD));
+			// Torso
+			glPushMatrix();
+				glRotated(-90.0, 1.0, 0.0, 0.0);
 
-			if (lod > 0)
-			{
-				drawHead();
+				drawTorso();
 
-				drawArmL(VAL(L_UPPER_ARM_YROT), VAL(L_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
-				drawArmR(VAL(R_UPPER_ARM_YROT), VAL(R_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
+				if (lod > 0)
+				{
+					drawHead();
 
-				drawLegL(VAL(L_LEG_XROT));
-				drawLegR(VAL(R_LEG_XROT));
+					drawArmL(VAL(L_UPPER_ARM_YROT), VAL(L_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
+					drawArmR(VAL(R_UPPER_ARM_YROT), VAL(R_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
 
-				drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), lod);
-			}
+					drawLegL(VAL(L_LEG_XROT));
+					drawLegR(VAL(R_LEG_XROT));
+
+					drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), lod);
+				}
+
+			glPopMatrix();
 
 		glPopMatrix();
-
-	glPopMatrix();
+	}
 
 	// drawTurret();
 }
@@ -81,6 +87,12 @@ int main()
     ModelerControl controls[NUMCONTROLS];
 
 	controls[LOD] = ModelerControl("Change Level of Detail", 0, 4, 1, 4);
+
+	controls[DLS] = ModelerControl("Display L-system", 0, 1, 1, 0);
+	controls[DV] = ModelerControl("D-value", 0, 1, 0.01, 0.1);
+	controls[IA] = ModelerControl("Initial Angle", 0, 360, 1, 90);
+	controls[AOI] = ModelerControl("Angle of Increment", 0, 360, 1, 30);
+	controls[IT] = ModelerControl("Iteration", 1, 6, 1, 4);
 	// Whole body
     controls[XPOS] = ModelerControl("X Position", -5, 5, 0.1f, 0);
     controls[YPOS] = ModelerControl("Y Position", 0, 5, 0.1f, 0);
