@@ -26,6 +26,17 @@ ModelerView* createSampleModel(int x, int y, int w, int h, char *label)
     return new SampleModel(x,y,w,h,label); 
 }
 
+double ani_height = -(head_size + torso_height)/3,
+	   cur_height = 0,
+	   chg_height = 0,
+	   ani_angle  = 15,
+	   cur_angle  = ani_angle,
+	   chg_angle  = 0,
+	   ani_wave   = 45,
+	   cur_wave   = ani_wave,
+	   chg_wave   = 0,
+	   time_wave  = 3;
+
 // We are going to override (is that the right word?) the draw()
 // method of ModelerView to draw out SampleModel
 void SampleModel::draw()
@@ -43,8 +54,33 @@ void SampleModel::draw()
 	// drawBox(10,0.01f,10);
 	// glPopMatrix();
 
+	if (ModelerApplication::Instance()->IsAnimating())
+	{
+		if (cur_height <= ani_height)
+			chg_height = -ani_height /15;
+		else if (cur_height >= 0)
+			chg_height = ani_height /15;
+
+		if (cur_angle >= ani_angle)
+			chg_angle = -ani_angle /15;
+		else if (cur_angle <= -ani_angle)
+			chg_angle = ani_angle /15;
+
+		if (cur_wave >= ani_wave)
+			chg_wave = -ani_wave * time_wave /15;
+		else if (cur_wave <= -ani_wave)
+			chg_wave = ani_wave * time_wave /15;
+
+		cur_height += chg_height;
+		cur_angle += chg_angle;
+		cur_wave += chg_wave;
+	}
+
 	glPushMatrix();
-	glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
+	glTranslated(VAL(XPOS), VAL(YPOS)+cur_height, VAL(ZPOS));
+
+	if (ModelerApplication::Instance()->IsAnimating())
+		glRotated(cur_angle, 0, 1, 0);
 
 		int lod = int(VAL(LOD));
 		// Torso
@@ -57,11 +93,18 @@ void SampleModel::draw()
 			{
 				drawHead();
 
-				drawArmL(VAL(L_UPPER_ARM_YROT), VAL(L_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
-				drawArmR(VAL(R_UPPER_ARM_YROT), VAL(R_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
+				double LZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : VAL(L_UPPER_ARM_ZROT),
+					   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : VAL(R_UPPER_ARM_ZROT);
+
+				drawArmL(VAL(L_UPPER_ARM_YROT), LZ, 45.0, 0.0, lod - 1);
+				drawArmR(VAL(R_UPPER_ARM_YROT), RZ, 45.0, 0.0, lod - 1);
+
+				glTranslated(0, 0, -cur_height);
 
 				drawLegL(VAL(L_LEG_XROT));
 				drawLegR(VAL(R_LEG_XROT));
+
+				glTranslated(0, 0, cur_height);
 
 				drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), lod);
 			}
