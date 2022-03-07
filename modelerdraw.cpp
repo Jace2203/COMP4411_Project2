@@ -416,11 +416,41 @@ void drawTriangle( double x1, double y1, double z1,
     }
 }
 
+double dypts(int index)
+{
+    if (index == 99)
+        return ((pts[0][99].y-pts[0][98].y)/(pts[0][99].x-pts[0][98].x));
+    if (index == 0)
+        return ((pts[0][1].y-pts[0][0].y)/(pts[0][1].x-pts[0][0].x));
+     return ((pts[0][index+1].y-pts[0][index-1].y)/(pts[0][index+1].x-pts[0][index-1].x));
+}
 
+double dzpts(int index)
+{
+    if (index == 99)
+        return ((pts[0][99].z-pts[0][98].z)/(pts[0][99].x-pts[0][98].x));
+    if (index == 0)
+        return ((pts[0][1].z-pts[0][0].z)/(pts[0][1].x-pts[0][0].x));
+    return ((pts[0][index+1].z-pts[0][index-1].z)/(pts[0][index+1].x-pts[0][index-1].x));
+}
 
+double dypath(int index)
+{
+    if (index == 99)
+        return ((path[0][99].y-path[0][98].y)/(path[0][99].x-path[0][98].x));
+    if (index == 0)
+        return ((path[0][1].y-path[0][0].y)/(path[0][1].x-path[0][0].x));
+    return ((path[0][index+1].y-path[0][index-1].y)/(path[0][index+1].x-path[0][index-1].x));
+}
 
-
-
+double dzpath(int index)
+{
+    if (index == 99)
+        return ((path[0][99].z-path[0][98].z)/(path[0][99].x-path[0][98].x));
+    if (index == 0)
+        return ((path[0][1].z-path[0][0].z)/(path[0][1].x-path[0][0].x));
+    return ((path[0][index+1].z-path[0][index-1].z)/(path[0][index+1].x-path[0][index-1].x));
+}
 
 
 

@@ -8,6 +8,10 @@
 #include "modelerglobals.h"
 #include "complexshape.h"
 
+#include <cmath>
+
+class Point;
+
 // To make a SampleModel, we inherit off of ModelerView
 class SampleModel : public ModelerView 
 {
@@ -24,6 +28,14 @@ ModelerView* createSampleModel(int x, int y, int w, int h, char *label)
 { 
     return new SampleModel(x,y,w,h,label); 
 }
+
+Point* ctrl = nullptr;	// ctrl points of circle curve
+Point** pts = nullptr;	// actual circle curve
+Point* ctrl2 = nullptr;	// ctrl points of path curve
+Point** path = nullptr;	// actual path curve
+Point** draw_pts = nullptr;
+int num_point = 0;
+int num_ctrl2 = 0;
 
 // We are going to override (is that the right word?) the draw()
 // method of ModelerView to draw out SampleModel
@@ -69,7 +81,134 @@ void SampleModel::draw()
 	// 	glPopMatrix();
 
 	// glPopMatrix();
-	drawTurret();
+	// drawTurret();
+
+	int init = 0;
+
+	if (VAL(NOP) != num_point)
+	{
+		if (ctrl)
+		{
+			Point* temp = new Point[int(VAL(NOP))];
+
+			double x = 1, y = 0, z = 0,
+				   x1 = x *cos(atan(dzpts(99))), z1 = -x*sin(atan(dzpts(99))),  // y axis rotate
+				   theta = atan(dypts(99)),
+				   x2 = x1 *cos(theta), y2 = x1*sin(theta);  //z axis rotate
+			for(int i = 0; i < VAL(NOP); ++i)
+			{
+				if (i < num_point)
+					temp[i] = ctrl[i];
+				else
+				{
+					temp[i].x = temp[i-1].x+x2;
+					temp[i].y = temp[i-1].y+y2;
+					temp[i].z = temp[i-1].z;
+				}
+			}
+
+			ctrl = temp;
+		}
+		else
+		{
+			ctrl = new Point[int(VAL(NOP))];
+			for(int i = 0; i < int(VAL(NOP)); ++i)
+				ctrl[i].x = double(i);
+
+			ctrl2 = new Point[int(VAL(NOP))];
+			for(int i = 0; i < int(VAL(NOP)); ++i)
+				ctrl2[i].x = double(i);
+		}
+
+		num_point = VAL(NOP);
+
+		pts = new Point*[num_point];
+		for(int i = 0; i < num_point; ++i)
+			pts[i] = new Point[100];
+
+		path = new Point*[num_point];
+		for(int i = 0; i < num_point; ++i)
+			path[i] = new Point[100];
+
+		init = 1;
+	}
+
+	if (VAL(A) || init)
+	{
+		if (VAL(P) < num_point)
+		{
+			ctrl[int(VAL(P))].x = VAL(X);
+			ctrl[int(VAL(P))].y = VAL(Y);
+			ctrl[int(VAL(P))].z = VAL(Z);
+		}
+
+		double t;	
+		for(int j = 0; j < num_point-1; ++j)
+		{
+			t = 0;
+			for(int i = 0; i < 100; ++i)
+			{
+				pts[j][i].x = (1-t)*ctrl[j].x+t*ctrl[j+1].x;
+				pts[j][i].y = (1-t)*ctrl[j].y+t*ctrl[j+1].y;
+				pts[j][i].z = (1-t)*ctrl[j].z+t*ctrl[j+1].z;
+				path[j][i].x = (1-t)*ctrl2[j].x+t*ctrl2[j+1].x;
+				path[j][i].y = (1-t)*ctrl2[j].y+t*ctrl2[j+1].y;
+				path[j][i].z = (1-t)*ctrl2[j].z+t*ctrl2[j+1].z;
+				t += 0.01;
+			}
+		}
+
+		for(int i = num_point-2; i > 0; --i)
+			for(int j = 0; j < i; ++j)
+			{
+				t = 0;
+				for(int k = 0; k < 100; ++k)
+				{
+					pts[j][k].y = (1-t)*pts[j][k].y+t*pts[j+1][k].y;
+					pts[j][k].z = (1-t)*pts[j][k].z+t*pts[j+1][k].z;
+					pts[j][k].x = (1-t)*pts[j][k].x+t*pts[j+1][k].x;
+					path[j][k].y = (1-t)*path[j][k].y+t*path[j+1][k].y;
+					path[j][k].z = (1-t)*path[j][k].z+t*path[j+1][k].z;
+					path[j][k].x = (1-t)*path[j][k].x+t*path[j+1][k].x;
+					t += 0.01;
+				}
+			}
+
+		// draw_pts = new Point* [100];
+		// for(int i = 0; i < 100; ++i)
+		// {
+		// 	draw_pts[i] = new Point[100];
+		// 	for(int j = 0; j < 100; ++j)
+		// 	{
+		// 		double x = 1, y = 0, z = 0,
+		// 			   x1 = x *cos(atan(dzpts(99))), z1 = -x*sin(atan(dzpts(99))),  // y axis rotate
+		// 			   theta = atan(dypts(99)),
+		// 			   x2 = x1 *cos(theta), y2 = x1*sin(theta);  //z axis rotate
+		// 	}
+		// }
+	}
+
+	glPushMatrix();
+	glRotated(90, 0, 1, 0);
+	glBegin(GL_LINE_STRIP);
+	for(int i = 0; i < 100; ++i)
+		glVertex3d(path[0][i].x, path[0][i].y, path[0][i].z);
+	glEnd();
+	glPopMatrix();
+
+	for(int i = 0; i < num_point; ++i)
+	{
+		glPushMatrix();
+		glTranslated(ctrl[i].x, ctrl[i].y, ctrl[i].z);
+		drawSphere(0.1);
+		glPopMatrix();
+	}
+
+	glBegin(GL_LINE_STRIP);
+	for(int i = 0; i < 100; ++i)
+		glVertex3d(pts[0][i].x, pts[0][i].y, pts[0][i].z);
+	glEnd();
+
 }
 
 int main()
@@ -83,6 +222,14 @@ int main()
     controls[ZPOS] = ModelerControl("Z Position", -5, 5, 0.1f, 0);
     controls[HEIGHT] = ModelerControl("Height", 1, 2.5, 0.1f, 1);
 	controls[ROTATE] = ModelerControl("Rotate", -135, 135, 1, 0);
+	controls[NOP] = ModelerControl("Num", 2, 6, 1, 2);
+	controls[P] = ModelerControl("Points", 0, 8, 1, 0);
+	controls[C] = ModelerControl("Circle", 0, 1, 1, 1);
+	controls[X] = ModelerControl("NewX", -4, 4, 1, 0);
+	controls[Y] = ModelerControl("NewY", -4, 4, 1, 0);
+	controls[Z] = ModelerControl("NewZ", -4, 4, 1, 0);
+	controls[A] = ModelerControl("Activate", 0, 1, 1, 0);
+
 
     ModelerApplication::Instance()->Init(&createSampleModel, controls, NUMCONTROLS);
     return ModelerApplication::Instance()->Run();

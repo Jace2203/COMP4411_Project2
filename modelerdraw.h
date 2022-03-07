@@ -10,6 +10,18 @@
 
 #include "modelerglobals.h"
 
+class Point
+{
+public:
+
+	Point() :x(0), y(0), z(0) {}
+	Point(double x, double y, double z) :x(x), y(y), z(z) {}
+
+	double x;
+	double y;
+	double z;
+};
+
 
 enum DrawModeSetting_t 
 { NONE=0, NORMAL, WIREFRAME, FLATSHADE, };
@@ -93,5 +105,19 @@ void drawCylinder( double h, double r1, double r2 );
 void drawTriangle( double x1, double y1, double z1,
 			       double x2, double y2, double z2,
 			       double x3, double y3, double z3 );
+
+double dypts(int index);
+double dzpts(int index);
+
+double dypath(int index);
+double dzpath(int index);
+
+extern Point* ctrl;
+extern Point** pts;
+extern Point* ctrl2;
+extern Point** path;
+extern int num_point;
+extern int num_ctrl2;
+
 
 #endif
