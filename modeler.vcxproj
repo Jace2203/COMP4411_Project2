@@ -157,6 +157,7 @@
     </ClCompile>
     <ClCompile Include="complexshape.cpp" />
     <ClCompile Include="drawbody.cpp" />
+    <ClCompile Include="metaball.cpp" />
     <ClCompile Include="modelerapp.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -194,6 +195,7 @@
     <ClInclude Include="complexshape.h" />
     <ClInclude Include="drawbody.h" />
     <ClInclude Include="mat.h" />
+    <ClInclude Include="metaball.h" />
     <ClInclude Include="modelerapp.h" />
     <ClInclude Include="modelerdraw.h" />
     <ClInclude Include="modelerglobals.h" />
