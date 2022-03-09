@@ -9,13 +9,13 @@
 |BW|Task|Done|
 |-|-|-|
 |W|dramatic light|
-|W|adjustable LoD|✔|
+|W|adjustable LoD|✔
 |W|your ideas|
 |B|texture map|
 |B|polygonal faces (triangles)|✔
 |B|animation|
 |B|individual looking (not just red/green)|
-|B|frame all|
+|B|frame all|✔
 |BW|up vector|✔
 |2B|new primitives for each|
 |2B|L-system|
