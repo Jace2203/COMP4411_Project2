@@ -30,9 +30,9 @@ ModelerView* createSampleModel(int x, int y, int w, int h, char *label)
 }
 
 Point* ctrl = nullptr;	// ctrl points of circle curve
-Point** pts = nullptr;	// actual circle curve
+Point* pts = nullptr;	// actual circle curve
 Point* ctrl2 = nullptr;	// ctrl points of path curve
-Point** path = nullptr;	// actual path curve
+Point* path = nullptr;	// actual path curve
 Point** draw_pts = nullptr;
 int num_point = 0;
 int num_ctrl2 = 0;
@@ -85,129 +85,101 @@ void SampleModel::draw()
 
 	int init = 0;
 
-	if (VAL(NOP) != num_point)
+    num_point = 9;
+
+	double l = 1,
+	       h = 1;
+
+	ctrl = new Point[num_point];
+	ctrl[0] = Point(+0.0, +0.0 * 1.15, +0.0);
+	ctrl[1] = Point(-1.0, +0.0 * 1.15, +0.0);
+	ctrl[2] = Point(-1.0, +1.0 * 1.15, +0.0);
+	ctrl[3] = Point(-1.0, +2.0 * 1.15, +0.0);
+	ctrl[4] = Point(+0.0, +2.0 * 1.15, +0.0);
+	ctrl[5] = Point(+1.0, +2.0 * 1.15, +0.0);
+	ctrl[6] = Point(+1.0, +1.0 * 1.15, +0.0);
+	ctrl[7] = Point(+1.0, +0.0 * 1.15, +0.0);
+	ctrl[8] = Point(+0.0, +0.0 * 1.15, +0.0);
+
+	num_ctrl2 = 4;
+
+	ctrl2 = new Point[num_ctrl2];
+
+	l = 0.75;
+	h = 1;
+
+	ctrl2[0] = Point(+0.0, +3.0, +0.0);
+	ctrl2[1] = Point(+0.0, +1.0, +0.0);
+	ctrl2[2] = Point(+3.0, +2.0, +0.0);
+	ctrl2[3] = Point(+3.0, +0.0, +0.0);
+
+	int num_t = 101;
+
+	//setcircle(3, 1);
+
+	calpoint(ctrl, &pts, num_point, num_t);
+	calpoint(ctrl2, &path, num_ctrl2, num_t);
+
+	init = 1;
+
+	if (init)
 	{
-		if (ctrl)
-		{
-			Point* temp = new Point[int(VAL(NOP))];
 
-			double x = 1, y = 0, z = 0,
-				   x1 = x *cos(atan(dzpts(99))), z1 = -x*sin(atan(dzpts(99))),  // y axis rotate
-				   theta = atan(dypts(99)),
-				   x2 = x1 *cos(theta), y2 = x1*sin(theta);  //z axis rotate
-			for(int i = 0; i < VAL(NOP); ++i)
+		draw_pts = new Point* [num_t];
+		for(int i = 0; i < num_t; ++i)
+		{
+			draw_pts[i] = new Point[num_t];
+			int previous, next;
+			if (i == 0)
 			{
-				if (i < num_point)
-					temp[i] = ctrl[i];
-				else
-				{
-					temp[i].x = temp[i-1].x+x2;
-					temp[i].y = temp[i-1].y+y2;
-					temp[i].z = temp[i-1].z;
-				}
+				previous = 0;
+				next = 1;
+			}
+			else if (i == num_t)
+			{
+				previous = num_t - 1;
+				next = num_t;
+			}
+			else
+			{
+				previous = i - 1;
+				next = i + 1;
 			}
 
-			ctrl = temp;
-		}
-		else
-		{
-			num_point = 3;
+			double dx = path[next].x - path[previous].x, dy = path[next].y - path[previous].y, dz = path[next].z - path[previous].z;
+			double theta, theta2 = 0;
+			// theta = atan(dy / dx), theta2 = atan(dz / dx);
 
-			ctrl = new Point[int(VAL(NOP))];
-			// for(int i = 0; i < int(VAL(NOP)); ++i)
-			// 	ctrl[i].x = double(i);
-			ctrl[0] = Point(0, 0, 0);
-			ctrl[1] = Point(1, 1, 0);
-			ctrl[2] = Point(2, 0, 0);
+			// if (dx > 0 && dy > 0)
+			// 	theta = M_PI/2 - theta;
+			// else if (dx > 0 && dy < 0)
+			// 	theta = M_PI/2 - theta;
+			// else if (dx < 0 && dy < 0)
+			// 	theta = 3*M_PI/2 - theta;
+			// else if (dx < 0 && dy > 0)
+			// 	theta = 3*M_PI/2 - theta;
 
-			ctrl2 = new Point[int(VAL(NOP))];
-			// for(int i = 0; i < int(VAL(NOP)); ++i)
-			// 	ctrl2[i].x = double(i);
-			ctrl2[0] = Point(0, 0, 0);
-			ctrl2[1] = Point(1, -1, 0);
-			ctrl2[2] = Point(2, 0, 0);
-		}
+			theta = acos(-dy/(sqrt(pow(dx, 2)+pow(dy, 2))));
 
-		// num_point = VAL(NOP);
+			if (dx < 0)
+				theta = 2*M_PI - theta;
 
-		pts = new Point*[num_point];
-		for(int i = 0; i < num_point; ++i)
-			pts[i] = new Point[100];
+			theta = theta - M_PI/2;
 
-		path = new Point*[num_point];
-		for(int i = 0; i < num_point; ++i)
-			path[i] = new Point[100];
-
-		init = 1;
-	}
-
-	if (VAL(A) || init)
-	{
-		if (VAL(P) < num_point)
-		{
-			ctrl[int(VAL(P))].x = VAL(X);
-			ctrl[int(VAL(P))].y = VAL(Y);
-			ctrl[int(VAL(P))].z = VAL(Z);
-		}
-
-		double t;	
-		for(int j = 0; j < num_point-1; ++j)
-		{
-			t = 0;
-			for(int i = 0; i < 100; ++i)
+			//printf("%1f\n", theta*180/M_PI);
+			for(int j = 0; j < num_t; ++j)
 			{
-				pts[j][i].x = (1-t)*ctrl[j].x+t*ctrl[j+1].x;
-				pts[j][i].y = (1-t)*ctrl[j].y+t*ctrl[j+1].y;
-				pts[j][i].z = (1-t)*ctrl[j].z+t*ctrl[j+1].z;
-				path[j][i].x = (1-t)*ctrl2[j].x+t*ctrl2[j+1].x;
-				path[j][i].y = (1-t)*ctrl2[j].y+t*ctrl2[j+1].y;
-				path[j][i].z = (1-t)*ctrl2[j].z+t*ctrl2[j+1].z;
-				t += 0.01;
-			}
-		}
-
-		for(int i = num_point-2; i > 0; --i)
-			for(int j = 0; j < i; ++j)
-			{
-				t = 0;
-				for(int k = 0; k < 100; ++k)
-				{
-					pts[j][k].y = (1-t)*pts[j][k].y+t*pts[j+1][k].y;
-					pts[j][k].z = (1-t)*pts[j][k].z+t*pts[j+1][k].z;
-					pts[j][k].x = (1-t)*pts[j][k].x+t*pts[j+1][k].x;
-					path[j][k].y = (1-t)*path[j][k].y+t*path[j+1][k].y;
-					path[j][k].z = (1-t)*path[j][k].z+t*path[j+1][k].z;
-					path[j][k].x = (1-t)*path[j][k].x+t*path[j+1][k].x;
-					t += 0.01;
-				}
-			}
-
-		draw_pts = new Point* [100];
-		for(int i = 0; i < 100; ++i)
-		{
-			draw_pts[i] = new Point[100];
-			for(int j = 0; j < 100; ++j)
-			{
-				double x = pts[0][j].x, y = pts[0][j].y, z = pts[0][j].z,
-					   x1 = x, y1 = y*cos(atan(dypath(i))) - z*sin(atan(dypath(i))), z1 = y*sin(atan(dypath(i)))+ z*cos(atan(dypath(i))),  // x axis rotate
-					   theta = atan(dzpath(i)),
-					   x2 = x1*cos(theta)+ z1*sin(theta), y2 = y1, z2 = -x1*sin(theta)+ z1*cos(theta);  //y axis rotate
+				double x = pts[j].x, y = pts[j].y, z = pts[j].z;
+				double x1 = x, y1 = y*cos(theta) - z*sin(theta), z1 = y*sin(theta)+ z*cos(theta);  // x axis rotate
+				double x2 = x1*cos(theta2)+ z1*sin(theta2), y2 = y1, z2 = -x1*sin(theta2)+ z1*cos(theta2);  //y axis rotate
+				//x2 = x; y2 = y; z2 = z;
 				
-				//printf("%1f %1f\n", atan(dypath(j)), theta);
-				draw_pts[i][j].x = x2+path[0][i].z;
-				draw_pts[i][j].y = y2+path[0][i].y;
-				draw_pts[i][j].z = z2-path[0][i].x;
+				draw_pts[i][j].x = x2+path[i].z;
+				draw_pts[i][j].y = y2+path[i].y;
+				draw_pts[i][j].z = z2-path[i].x;
 			}
 		}
 	}
-
-	glPushMatrix();
-	glRotated(90, 0, 1, 0);
-	glBegin(GL_LINE_STRIP);
-	for(int i = 0; i < 100; ++i)
-		glVertex3d(path[0][i].x, path[0][i].y, path[0][i].z);
-	glEnd();
-	glPopMatrix();
 
 	for(int i = 0; i < num_point; ++i)
 	{
@@ -217,22 +189,57 @@ void SampleModel::draw()
 		glPopMatrix();
 	}
 
-	glBegin(GL_LINE_STRIP);
-	for(int i = 0; i < 100; ++i)
-		glVertex3d(pts[0][i].x, pts[0][i].y, pts[0][i].z);
-	glEnd();
-
-	for(int i = 0; i < 99; ++i)
+	for(int i = 0; i < num_ctrl2; ++i)
 	{
-		glBegin(GL_TRIANGLE_STRIP);
-		for(int j = 0; j < 100; ++j)
-		{
-			glVertex3d(draw_pts[i][j].x, draw_pts[i][j].y, draw_pts[i][j].z);
-			glVertex3d(draw_pts[i+1][j].x, draw_pts[i+1][j].y, draw_pts[i+1][j].z);
-		}
-		glEnd();
+		glPushMatrix();
+		glRotated(90, 0, 1, 0);
+		glTranslated(ctrl2[i].x, ctrl2[i].y, ctrl2[i].z);
+		drawSphere(0.1);
+		glPopMatrix();
 	}
 
+	glBegin(GL_LINE_STRIP);
+	for(int i = 0; i < num_t; ++i)
+		glVertex3d(pts[i].x, pts[i].y, pts[i].z);
+	glEnd();
+
+	glPushMatrix();
+	glRotated(90, 0, 1, 0);
+	glBegin(GL_LINE_STRIP);
+	for(int i = 0; i < num_t; ++i)
+		glVertex3d(path[i].x, path[i].y, path[i].z);
+	glEnd();
+	glPopMatrix();
+
+	if (!VAL(MODE))
+	{
+		for(int i = 0; i < num_t; ++i)
+		{
+			glBegin(GL_LINE_STRIP);
+			for(int j = 0; j < num_t; ++j)
+				glVertex3d(draw_pts[i][j].x, draw_pts[i][j].y, draw_pts[i][j].z);
+			glEnd();
+		}
+	}
+	else
+	{
+		for(int i = 0; i < num_t-1; ++i)
+		{
+			if (i % 3 == 0)
+				setDiffuseColor(1, 0, 0);
+			else if (i % 3 == 1)
+				setDiffuseColor(0, 1, 0);
+			else
+				setDiffuseColor(0, 0, 1);
+			glBegin(GL_TRIANGLE_STRIP);
+			for(int j = 0; j < num_t; ++j)
+			{
+				glVertex3d(draw_pts[i][j].x, draw_pts[i][j].y, draw_pts[i][j].z);
+				glVertex3d(draw_pts[i+1][j].x, draw_pts[i+1][j].y, draw_pts[i+1][j].z);
+			}
+			glEnd();
+		}
+	}
 }
 
 int main()
@@ -246,14 +253,7 @@ int main()
     controls[ZPOS] = ModelerControl("Z Position", -5, 5, 0.1f, 0);
     controls[HEIGHT] = ModelerControl("Height", 1, 2.5, 0.1f, 1);
 	controls[ROTATE] = ModelerControl("Rotate", -135, 135, 1, 0);
-	controls[NOP] = ModelerControl("Num", 2, 6, 1, 4);
-	controls[P] = ModelerControl("Points", 0, 8, 1, 0);
-	controls[C] = ModelerControl("Circle", 0, 1, 1, 1);
-	controls[X] = ModelerControl("NewX", -4, 4, 1, 0);
-	controls[Y] = ModelerControl("NewY", -4, 4, 1, 0);
-	controls[Z] = ModelerControl("NewZ", -4, 4, 1, 0);
-	controls[A] = ModelerControl("Activate", 0, 1, 1, 0);
-
+	controls[MODE] = ModelerControl("Mode", 0, 1, 1, 0);
 
     ModelerApplication::Instance()->Init(&createSampleModel, controls, NUMCONTROLS);
     return ModelerApplication::Instance()->Run();

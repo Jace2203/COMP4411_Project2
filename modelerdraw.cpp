@@ -416,44 +416,72 @@ void drawTriangle( double x1, double y1, double z1,
     }
 }
 
-double dypts(int index)
+void setcircle(double inner, double outer)
 {
-    if (index == 99)
-        return ((pts[0][99].y-pts[0][98].y)/(pts[0][99].x-pts[0][98].x));
-    if (index == 0)
-        return ((pts[0][1].y-pts[0][0].y)/(pts[0][1].x-pts[0][0].x));
-     return ((pts[0][index+1].y-pts[0][index-1].y)/(pts[0][index+1].x-pts[0][index-1].x));
+    num_point = 9;
+
+	ctrl = new Point[num_point];
+	ctrl[0] = Point(+0.0 * outer, +0.0 * outer, +0.0);
+	ctrl[1] = Point(-1.0 * outer, +0.0 * outer, +0.0);
+	ctrl[2] = Point(-1.0 * outer, +1.0 * outer, +0.0);
+	ctrl[3] = Point(-1.0 * outer, +2.0 * outer, +0.0);
+	ctrl[4] = Point(+0.0 * outer, +2.0 * outer, +0.0);
+	ctrl[5] = Point(+1.0 * outer, +2.0 * outer, +0.0);
+	ctrl[6] = Point(+1.0 * outer, +1.0 * outer, +0.0);
+	ctrl[7] = Point(+1.0 * outer, +0.0 * outer, +0.0);
+	ctrl[8] = ctrl[0];
+
+	num_ctrl2 = 9;
+
+	ctrl2 = new Point[num_ctrl2];
+	ctrl2[0] = Point(+0.0 * inner, +0.0 * inner, +0.0);
+	ctrl2[1] = Point(-1.0 * inner, +0.0 * inner, +1.0);
+	ctrl2[2] = Point(-1.0 * inner, +1.0 * inner, +2.0);
+	ctrl2[3] = Point(-1.0 * inner, +2.0 * inner, +3.0);
+	ctrl2[4] = Point(+0.0 * inner, +2.0 * inner, +4.0);
+	ctrl2[5] = Point(+1.0 * inner, +2.0 * inner, +5.0);
+	ctrl2[6] = Point(+1.0 * inner, +1.0 * inner, +6.0);
+	ctrl2[7] = Point(+1.0 * inner, +0.0 * inner, +7.0);
+	ctrl2[8] = Point(+0.0 * inner, +0.0 * inner, +8.0);
 }
 
-double dzpts(int index)
+void calpoint(Point* ctl, Point** point, int num_pts, int num_t)
 {
-    if (index == 99)
-        return ((pts[0][99].z-pts[0][98].z)/(pts[0][99].x-pts[0][98].x));
-    if (index == 0)
-        return ((pts[0][1].z-pts[0][0].z)/(pts[0][1].x-pts[0][0].x));
-    return ((pts[0][index+1].z-pts[0][index-1].z)/(pts[0][index+1].x-pts[0][index-1].x));
+	Point** temp = new Point*[num_pts];
+	for(int i = 0; i < num_pts; ++i)
+		temp[i] = new Point[num_t];
+
+    double t, diff = 1.0 / (num_t -1);
+    for(int j = 0; j < num_pts-1; ++j)
+    {
+        t = 0;
+        for(int i = 0; i < num_t; ++i)
+        {
+            temp[j][i].x = (1-t)*ctl[j].x+t*ctl[j+1].x;
+            temp[j][i].y = (1-t)*ctl[j].y+t*ctl[j+1].y;
+            temp[j][i].z = (1-t)*ctl[j].z+t*ctl[j+1].z;
+            t += diff;
+        }
+    }
+
+    for(int i = num_pts-2; i > 0; --i)
+        for(int j = 0; j < i; ++j)
+        {
+            t = 0;
+            for(int k = 0; k < num_t; ++k)
+            {
+                temp[j][k].x = (1-t)*temp[j][k].x+t*temp[j+1][k].x;
+                temp[j][k].y = (1-t)*temp[j][k].y+t*temp[j+1][k].y;
+                temp[j][k].z = (1-t)*temp[j][k].z+t*temp[j+1][k].z;
+                t += diff;
+            }
+        }
+
+    *point = new Point[num_t];
+    for(int i = 0; i < num_t; ++i)
+    {
+        (*point)[i].x = temp[0][i].x;
+        (*point)[i].y = temp[0][i].y;
+        (*point)[i].z = temp[0][i].z;
+    }
 }
-
-double dypath(int index)
-{
-    if (index == 99)
-        return ((path[0][99].y-path[0][98].y)/(path[0][99].x-path[0][98].x));
-    if (index == 0)
-        return ((path[0][1].y-path[0][0].y)/(path[0][1].x-path[0][0].x));
-    return ((path[0][index+1].y-path[0][index-1].y)/(path[0][index+1].x-path[0][index-1].x));
-}
-
-double dzpath(int index)
-{
-    if (index == 99)
-        return ((path[0][99].z-path[0][98].z)/(path[0][99].x-path[0][98].x));
-    if (index == 0)
-        return ((path[0][1].z-path[0][0].z)/(path[0][1].x-path[0][0].x));
-    return ((path[0][index+1].z-path[0][index-1].z)/(path[0][index+1].x-path[0][index-1].x));
-}
-
-
-
-
-
-
