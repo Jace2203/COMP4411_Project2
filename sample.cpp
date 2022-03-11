@@ -60,8 +60,8 @@ void SampleModel::draw()
 				drawArmL(VAL(L_UPPER_ARM_YROT), VAL(L_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
 				drawArmR(VAL(R_UPPER_ARM_YROT), VAL(R_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
 
-				drawLegL(VAL(L_LEG_XROT));
-				drawLegR(VAL(R_LEG_XROT));
+				drawLegL(VAL(L_THIGH_XROT), VAL(L_LEG_XROT));
+				drawLegR(VAL(R_THIGH_XROT), VAL(R_LEG_XROT));
 
 				drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), lod);
 			}
@@ -93,8 +93,10 @@ int main()
 	controls[R_UPPER_ARM_ZROT] = ModelerControl("Right Upper Arm Z Rotation", -45, 45, 0.1f, 0);
 
 	// Leg
-	controls[L_LEG_XROT] = ModelerControl("Left Leg X Rotation", -30, 30, 0.1f, 0);
-	controls[R_LEG_XROT] = ModelerControl("Right Leg X Rotation", -30, 30, 0.1f, 0);
+	controls[L_THIGH_XROT] = ModelerControl("Left Thigh X Rotation", -60, 50, 0.1f, 0);
+	controls[R_THIGH_XROT] = ModelerControl("Right Thigh X Rotation", -60, 50, 0.1f, 0);
+	controls[L_LEG_XROT] = ModelerControl("Left Leg X Rotation", 0, 140, 0.1f, 0);
+	controls[R_LEG_XROT] = ModelerControl("Right Leg X Rotation", 0, 140, 0.1f, 0);
 
 	// Equipment
 	controls[BACK_YROT] = ModelerControl("Back Equipment Y Rotation", -15, 15, 0.1f, 0);
