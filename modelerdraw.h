@@ -95,6 +95,8 @@ void drawSphere(double r);
 // Draw an axis-aligned box from origin to (x,y,z)
 void drawBox( double x, double y, double z );
 
+void loadTexture(char* bmp);
+
 // Draw an axis-aligned texture box from origin to (x,y,z)
 void drawTextureBox( double x, double y, double z );
 

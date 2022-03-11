@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <math.h>
 
+#include "bitmap.h"
+
 // ********************************************************
 // Support functions from previous version of modeler
 // ********************************************************
@@ -293,9 +295,46 @@ void drawBox( double x, double y, double z )
     }
 }
 
+void loadTexture(char* bmp)
+{
+    int width, height;
+
+    unsigned char* data = readBMP(bmp, width, height);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data );
+
+    // glEnable(GL_TEXTURE_2D);
+
+    //glDisable(GL_TEXTURE_2D);
+}
+
 void drawTextureBox( double x, double y, double z )
 {
     // NOT IMPLEMENTED, SORRY (ehsu)
+
+    int width, height;
+
+    unsigned char* data = readBMP("t1.bmp", width, height);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data );
+
+    glEnable(GL_TEXTURE_2D);
+
+    drawCylinder(1, 1, 1);
+    
+    glDisable(GL_TEXTURE_2D);
 }
 
 void drawCylinder( double h, double r1, double r2 )
@@ -330,12 +369,13 @@ void drawCylinder( double h, double r1, double r2 )
         GLUquadricObj* gluq;
         
         /* GLU will again do the work.  draw the sides of the cylinder. */
+
         gluq = gluNewQuadric();
         gluQuadricDrawStyle( gluq, GLU_FILL );
         gluQuadricTexture( gluq, GL_TRUE );
         gluCylinder( gluq, r1, r2, h, divisions, divisions);
         gluDeleteQuadric( gluq );
-        
+
         if ( r1 > 0.0 )
         {
         /* if the r1 end does not come to a point, draw a flat disk to
@@ -435,14 +475,14 @@ void setcircle(double inner, double outer)
 
 	ctrl2 = new Point[num_ctrl2];
 	ctrl2[0] = Point(+0.0 * inner, +0.0 * inner, +0.0);
-	ctrl2[1] = Point(-1.0 * inner, +0.0 * inner, +1.0);
-	ctrl2[2] = Point(-1.0 * inner, +1.0 * inner, +2.0);
-	ctrl2[3] = Point(-1.0 * inner, +2.0 * inner, +3.0);
-	ctrl2[4] = Point(+0.0 * inner, +2.0 * inner, +4.0);
-	ctrl2[5] = Point(+1.0 * inner, +2.0 * inner, +5.0);
-	ctrl2[6] = Point(+1.0 * inner, +1.0 * inner, +6.0);
-	ctrl2[7] = Point(+1.0 * inner, +0.0 * inner, +7.0);
-	ctrl2[8] = Point(+0.0 * inner, +0.0 * inner, +8.0);
+	ctrl2[1] = Point(-1.0 * inner, +0.0 * inner, +0.0);
+	ctrl2[2] = Point(-1.0 * inner, +1.0 * inner, +0.0);
+	ctrl2[3] = Point(-1.0 * inner, +2.0 * inner, +0.0);
+	ctrl2[4] = Point(+0.0 * inner, +2.0 * inner, +0.0);
+	ctrl2[5] = Point(+1.0 * inner, +2.0 * inner, +0.0);
+	ctrl2[6] = Point(+1.0 * inner, +1.0 * inner, +0.0);
+	ctrl2[7] = Point(+1.0 * inner, +0.0 * inner, +0.0);
+	ctrl2[8] = Point(+0.0 * inner, +0.0 * inner, +0.0);
 }
 
 void calpoint(Point* ctl, Point** point, int num_pts, int num_t)

@@ -7,6 +7,7 @@
 
 #include "modelerglobals.h"
 #include "complexshape.h"
+#include "drawbody.h"
 
 #include <cmath>
 
@@ -41,81 +42,67 @@ int num_ctrl2 = 0;
 // method of ModelerView to draw out SampleModel
 void SampleModel::draw()
 {
-    // This call takes care of a lot of the nasty projection 
-    // matrix stuff.  Unless you want to fudge directly with the 
-	// projection matrix, don't bother with this ...
     ModelerView::draw();
 
-	// // draw the floor
-	// setAmbientColor(.1f,.1f,.1f);
-	// setDiffuseColor(COLOR_RED);
-	// glPushMatrix();
-	// glTranslated(-5,0,-5);
-	// drawBox(10,0.01f,10);
-	// glPopMatrix();
+	glPushMatrix();
+	glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
 
-	// // draw the sample model
-	// setAmbientColor(.1f,.1f,.1f);
-	// setDiffuseColor(COLOR_GREEN);
-	// glPushMatrix();
-	// glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
+		int lod = int(VAL(LOD));
+		// Torso
+		glPushMatrix();
+			glRotated(-90.0, 1.0, 0.0, 0.0);
 
-	// 	glPushMatrix();
-	// 	glTranslated(-1.5, 0, -2);
-	// 	glScaled(3, 1, 4);
-	// 	drawBox(1,1,1);
-	// 	glPopMatrix();
+			loadTexture("body2.bmp");
+			glEnable(GL_TEXTURE_2D);
 
-	// 	// draw cannon
-	// 	glPushMatrix();
-	// 	glRotated(VAL(ROTATE), 0.0, 1.0, 0.0);
-	// 	glRotated(-90, 1.0, 0.0, 0.0);
-	// 	drawCylinder(VAL(HEIGHT), 0.1, 0.1);
+			drawTorso();
 
-	// 	glTranslated(0.0, 0.0, VAL(HEIGHT));
-	// 	drawCylinder(1, 1.0, 0.9);
+			glDisable(GL_TEXTURE_2D);
 
-	// 	glTranslated(0.0, 0.0, 0.5);
-	// 	glRotated(90, 1.0, 0.0, 0.0);
-	// 	drawCylinder(4, 0.1, 0.2);
-	// 	glPopMatrix();
+			if (lod > 0)
+			{
+				drawHead();
 
-	// glPopMatrix();
-	// drawTurret();
+				drawArmL(VAL(L_UPPER_ARM_YROT), VAL(L_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
+				drawArmR(VAL(R_UPPER_ARM_YROT), VAL(R_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
+	
+				loadTexture("leg.bmp");
+				glEnable(GL_TEXTURE_2D);
 
+				drawLegL(VAL(L_LEG_XROT));
+				drawLegR(VAL(R_LEG_XROT));
+
+				glDisable(GL_TEXTURE_2D);
+
+				drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), lod);
+			}
+
+		glPopMatrix();
+
+	glPopMatrix();
+
+
+/*
 	int init = 0;
 
-    num_point = 9;
-
-	double l = 1,
-	       h = 1;
+    num_point = 4;
 
 	ctrl = new Point[num_point];
-	ctrl[0] = Point(+0.0, +0.0 * 1.15, +0.0);
-	ctrl[1] = Point(-1.0, +0.0 * 1.15, +0.0);
-	ctrl[2] = Point(-1.0, +1.0 * 1.15, +0.0);
-	ctrl[3] = Point(-1.0, +2.0 * 1.15, +0.0);
-	ctrl[4] = Point(+0.0, +2.0 * 1.15, +0.0);
-	ctrl[5] = Point(+1.0, +2.0 * 1.15, +0.0);
-	ctrl[6] = Point(+1.0, +1.0 * 1.15, +0.0);
-	ctrl[7] = Point(+1.0, +0.0 * 1.15, +0.0);
-	ctrl[8] = Point(+0.0, +0.0 * 1.15, +0.0);
+	ctrl[0] = Point(+0.15, +1.0, +0.0);
+	ctrl[1] = Point(+0.00, +0.8, +0.0);
+	ctrl[2] = Point(+0.00, +0.35, +0.0);
+	ctrl[3] = Point(-0.00, +0.0, +0.0);
 
 	num_ctrl2 = 4;
 
 	ctrl2 = new Point[num_ctrl2];
 
-	l = 0.75;
-	h = 1;
-
-	ctrl2[0] = Point(+0.0, +3.0, +0.0);
-	ctrl2[1] = Point(+0.0, +1.0, +0.0);
-	ctrl2[2] = Point(+3.0, +2.0, +0.0);
-	ctrl2[3] = Point(+3.0, +0.0, +0.0);
+	ctrl2[0] = Point(+0.0, +0.0, +0.0);
+	ctrl2[1] = Point(+0.0, +0.0, -0.3);
+	ctrl2[2] = Point(+0.5, +0.0, -0.3);
+	ctrl2[3] = Point(+0.5, +0.0, +0.0);
 
 	int num_t = 101;
-
-	//setcircle(3, 1);
 
 	calpoint(ctrl, &pts, num_point, num_t);
 	calpoint(ctrl2, &path, num_ctrl2, num_t);
@@ -148,16 +135,6 @@ void SampleModel::draw()
 
 			double dx = path[next].x - path[previous].x, dy = path[next].y - path[previous].y, dz = path[next].z - path[previous].z;
 			double theta, theta2 = 0;
-			// theta = atan(dy / dx), theta2 = atan(dz / dx);
-
-			// if (dx > 0 && dy > 0)
-			// 	theta = M_PI/2 - theta;
-			// else if (dx > 0 && dy < 0)
-			// 	theta = M_PI/2 - theta;
-			// else if (dx < 0 && dy < 0)
-			// 	theta = 3*M_PI/2 - theta;
-			// else if (dx < 0 && dy > 0)
-			// 	theta = 3*M_PI/2 - theta;
 
 			theta = acos(-dy/(sqrt(pow(dx, 2)+pow(dy, 2))));
 
@@ -181,39 +158,39 @@ void SampleModel::draw()
 		}
 	}
 
-	for(int i = 0; i < num_point; ++i)
-	{
-		glPushMatrix();
-		glTranslated(ctrl[i].x, ctrl[i].y, ctrl[i].z);
-		drawSphere(0.1);
-		glPopMatrix();
-	}
+	// for(int i = 0; i < num_point; ++i)
+	// {
+	// 	glPushMatrix();
+	// 	glTranslated(ctrl[i].x, ctrl[i].y, ctrl[i].z);
+	// 	drawSphere(0.1);
+	// 	glPopMatrix();
+	// }
 
-	for(int i = 0; i < num_ctrl2; ++i)
-	{
-		glPushMatrix();
-		glRotated(90, 0, 1, 0);
-		glTranslated(ctrl2[i].x, ctrl2[i].y, ctrl2[i].z);
-		drawSphere(0.1);
-		glPopMatrix();
-	}
+	// for(int i = 0; i < num_ctrl2; ++i)
+	// {
+	// 	glPushMatrix();
+	// 	glRotated(90, 0, 1, 0);
+	// 	glTranslated(ctrl2[i].x, ctrl2[i].y, ctrl2[i].z);
+	// 	drawSphere(0.1);
+	// 	glPopMatrix();
+	// }
 
-	glBegin(GL_LINE_STRIP);
-	for(int i = 0; i < num_t; ++i)
-		glVertex3d(pts[i].x, pts[i].y, pts[i].z);
-	glEnd();
+	// glBegin(GL_LINE_STRIP);
+	// for(int i = 0; i < num_t; ++i)
+	// 	glVertex3d(pts[i].x, pts[i].y, pts[i].z);
+	// glEnd();
 
-	glPushMatrix();
-	glRotated(90, 0, 1, 0);
-	glBegin(GL_LINE_STRIP);
-	for(int i = 0; i < num_t; ++i)
-		glVertex3d(path[i].x, path[i].y, path[i].z);
-	glEnd();
-	glPopMatrix();
+	// glPushMatrix();
+	// glRotated(90, 0, 1, 0);
+	// glBegin(GL_LINE_STRIP);
+	// for(int i = 0; i < num_t; ++i)
+	// 	glVertex3d(path[i].x, path[i].y, path[i].z);
+	// glEnd();
+	// glPopMatrix();
 
 	if (!VAL(MODE))
 	{
-		for(int i = 0; i < num_t; ++i)
+		for(int i = 1; i < num_t-1; ++i)
 		{
 			glBegin(GL_LINE_STRIP);
 			for(int j = 0; j < num_t; ++j)
@@ -223,7 +200,7 @@ void SampleModel::draw()
 	}
 	else
 	{
-		for(int i = 0; i < num_t-1; ++i)
+		for(int i = 1; i < num_t-1; ++i)
 		{
 			if (i % 3 == 0)
 				setDiffuseColor(1, 0, 0);
@@ -240,6 +217,7 @@ void SampleModel::draw()
 			glEnd();
 		}
 	}
+	*/
 }
 
 int main()
@@ -248,11 +226,36 @@ int main()
 	// Constructor is ModelerControl(name, minimumvalue, maximumvalue, 
 	// stepsize, defaultvalue)
     ModelerControl controls[NUMCONTROLS];
+
+	controls[LOD] = ModelerControl("Change Level of Detail", 0, 4, 1, 4);
+	// Whole body
     controls[XPOS] = ModelerControl("X Position", -5, 5, 0.1f, 0);
     controls[YPOS] = ModelerControl("Y Position", 0, 5, 0.1f, 0);
     controls[ZPOS] = ModelerControl("Z Position", -5, 5, 0.1f, 0);
-    controls[HEIGHT] = ModelerControl("Height", 1, 2.5, 0.1f, 1);
-	controls[ROTATE] = ModelerControl("Rotate", -135, 135, 1, 0);
+
+	// Arm
+	controls[L_UPPER_ARM_YROT] = ModelerControl("Left Upper Arm Y Rotation", 10, 135, 0.1f, 10);
+	controls[L_UPPER_ARM_ZROT] = ModelerControl("Left Upper Arm Z Rotation", -45, 45, 0.1f, 0);
+	controls[R_UPPER_ARM_YROT] = ModelerControl("Right Upper Arm Y Rotation", 10, 135, 0.1f, 10);
+	controls[R_UPPER_ARM_ZROT] = ModelerControl("Right Upper Arm Z Rotation", -45, 45, 0.1f, 0);
+
+	// Leg
+	controls[L_LEG_XROT] = ModelerControl("Left Leg X Rotation", -30, 30, 0.1f, 0);
+	controls[R_LEG_XROT] = ModelerControl("Right Leg X Rotation", -30, 30, 0.1f, 0);
+
+	// Equipment
+	controls[BACK_YROT] = ModelerControl("Back Equipment Y Rotation", -15, 15, 0.1f, 0);
+	controls[L_EQUIP_YROT] = ModelerControl("Left Equipment Y Rotation", -15, 15, 0.1f, 0);
+	controls[R_EQUIP_YROT] = ModelerControl("Right Equipment Y Rotation", -15, 15, 0.1f, 0);
+
+	// Turret YROT
+	controls[L_TURRET_YROT] = ModelerControl("Left Turret Y Rotation", -30, 225, 1, 0);
+	controls[R_TURRET_YROT] = ModelerControl("Right Turret Y Rotation", -30, 225, 1, 0);
+
+	// Turret XROT
+	controls[L_TURRET_XROT] = ModelerControl("Left Turret X Rotation", 10, 85, 1, 36);
+	controls[R_TURRET_XROT] = ModelerControl("Right Turret X Rotation", 10, 85, 1, 36);
+
 	controls[MODE] = ModelerControl("Mode", 0, 1, 1, 0);
 
     ModelerApplication::Instance()->Init(&createSampleModel, controls, NUMCONTROLS);

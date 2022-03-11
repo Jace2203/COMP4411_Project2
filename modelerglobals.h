@@ -9,8 +9,18 @@
 // We'll use these constants to access the values 
 // of the controls from the user interface.
 enum SampleModelControls
-{ 
-	XPOS, YPOS, ZPOS, HEIGHT, ROTATE, MODE, NUMCONTROLS
+{
+	LOD,
+	XPOS, YPOS, ZPOS,
+	L_UPPER_ARM_YROT, R_UPPER_ARM_YROT,
+	L_UPPER_ARM_ZROT, R_UPPER_ARM_ZROT,
+	L_LEG_XROT, R_LEG_XROT,
+	BACK_YROT,
+	L_EQUIP_YROT, R_EQUIP_YROT,
+	L_TURRET_YROT, R_TURRET_YROT,
+	L_TURRET_XROT, R_TURRET_XROT,
+	MODE,
+	NUMCONTROLS
 };
 
 // Colors
