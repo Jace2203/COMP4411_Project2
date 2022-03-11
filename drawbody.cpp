@@ -83,7 +83,7 @@ void drawLegL(double thigh_x, double thigh_y, double leg_x)
         glPushMatrix();
             glRotated(leg_x, 1.0, 0.0, 0.0);
             drawCylinder(leg_length, 0.12, 0.11);
-        glPopMatrix();        
+        glPopMatrix();
     glPopMatrix();
 }
 
@@ -101,7 +101,7 @@ void drawLegR(double thigh_x, double thigh_y, double leg_x)
         glPushMatrix();
             glRotated(leg_x, 1.0, 0.0, 0.0);
             drawCylinder(leg_length, 0.12, 0.11);
-        glPopMatrix();        
+        glPopMatrix();
     glPopMatrix();
 }
 
