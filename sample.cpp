@@ -38,8 +38,8 @@ public:
 		limits[2][0] = 0;
 		limits[2][1] = 140;
 
-		last_target_L = new Vec3d(VAL(L_TARGET_X), VAL(L_TARGET_Y) - 0.9998, VAL(L_TARGET_Z));
-		last_target_R = new Vec3d(VAL(R_TARGET_X), VAL(R_TARGET_Y) - 0.9998, VAL(R_TARGET_Z));
+		last_target_L = new Vec3d(VAL(L_TARGET_X), VAL(L_TARGET_Y) - 0.9962, VAL(L_TARGET_Z));
+		last_target_R = new Vec3d(VAL(R_TARGET_X), VAL(R_TARGET_Y) - 0.9962, VAL(R_TARGET_Z));
 
 		length = new double[2];
 		length[0] = 0.5;
@@ -92,28 +92,28 @@ void SampleModel::draw()
 
 	if (VAL(APPLY_IK))
 	{
-		if (*last_target_L != Vec3d(VAL(L_TARGET_X), VAL(L_TARGET_Y) - 0.9998, VAL(L_TARGET_Z)))
+		if (*last_target_L != Vec3d(VAL(L_TARGET_X), VAL(L_TARGET_Y) - 0.9962, VAL(L_TARGET_Z)))
 		{
 			angles_L[0] = VAL(L_THIGH_XROT);
 			angles_L[1] = VAL(L_THIGH_YROT);
 			angles_L[2] = VAL(L_LEG_XROT);
 
 			(*last_target_L)[0] = VAL(L_TARGET_X);
-			(*last_target_L)[1] = VAL(L_TARGET_Y) - 0.9998;
+			(*last_target_L)[1] = VAL(L_TARGET_Y) - 0.9962;
 			(*last_target_L)[2] = VAL(L_TARGET_Z);
-			std::cout << "L " << *last_target_L << std::endl;
+			// std::cout << "L " << *last_target_L << std::endl;
 
 			LegIK(length, angles_L, limits, *last_target_L);
 		}
 
-		// if (*last_target_R != Vec3d(VAL(R_TARGET_X), VAL(R_TARGET_Y) - 0.9998, VAL(R_TARGET_Z)))
+		// if (*last_target_R != Vec3d(VAL(R_TARGET_X), VAL(R_TARGET_Y) - 0.9962, VAL(R_TARGET_Z)))
 		// {
 		// 	angles_R[0] = VAL(R_THIGH_XROT);
 		// 	angles_R[1] = VAL(R_THIGH_YROT);
 		// 	angles_R[2] = VAL(R_LEG_XROT);
 
 		// 	(*last_target_R)[0] = VAL(R_TARGET_X);
-		// 	(*last_target_R)[1] = VAL(R_TARGET_Y) - 0.9998;
+		// 	(*last_target_R)[1] = VAL(R_TARGET_Y) - 0.9962;
 		// 	(*last_target_R)[2] = VAL(R_TARGET_Z);
 
 		// 	LegIK(length, angles_R, limits, *last_target_R);
@@ -188,12 +188,12 @@ int main()
 	controls[R_UPPER_ARM_ZROT] = ModelerControl("Right Upper Arm Z Rotation", -45, 45, 0.1f, 0);
 
 	// Leg
-	controls[L_THIGH_XROT] = ModelerControl("Left Thigh X Rotation", -60, 50, 0.1f, -1);
-	controls[R_THIGH_XROT] = ModelerControl("Right Thigh X Rotation", -60, 50, 0.1f, -1);
+	controls[L_THIGH_XROT] = ModelerControl("Left Thigh X Rotation", -60, 50, 0.1f, -5);
+	controls[R_THIGH_XROT] = ModelerControl("Right Thigh X Rotation", -60, 50, 0.1f, -5);
 	controls[L_THIGH_YROT] = ModelerControl("Left Thigh Y Rotation", 0, 90, 0.1f, 0);
 	controls[R_THIGH_YROT] = ModelerControl("Right Thigh Y Rotation", 0, 90, 0.1f, 0);
-	controls[L_LEG_XROT] = ModelerControl("Left Leg X Rotation", 0, 140, 0.1f, 1);
-	controls[R_LEG_XROT] = ModelerControl("Right Leg X Rotation", 0, 140, 0.1f, 1);
+	controls[L_LEG_XROT] = ModelerControl("Left Leg X Rotation", 0, 140, 0.1f, 10);
+	controls[R_LEG_XROT] = ModelerControl("Right Leg X Rotation", 0, 140, 0.1f, 10);
 
 	// Equipment
 	controls[BACK_YROT] = ModelerControl("Back Equipment Y Rotation", -15, 15, 0.1f, 0);
