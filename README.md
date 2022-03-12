@@ -14,7 +14,7 @@
 |B|texture map|
 |B|polygonal faces (triangles)|✔
 |B|animation|
-|B|individual looking (not just red/green)|
+|B|individual looking (not just red/green)|✔
 |B|frame all|
 |BW|up vector|✔
 |2B|new primitives for each|

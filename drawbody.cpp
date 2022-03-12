@@ -105,7 +105,7 @@ void drawLegR(double thigh_x, double thigh_y, double leg_x)
     glPopMatrix();
 }
 
-void drawEquipment(double back_y, double l_equip_y, double r_equip_y, double l_turret_y, double r_turret_y, double l_turret_x, double r_turret_x, int lod)
+void drawEquipment(double back_y, double l_equip_y, double r_equip_y, double l_turret_y, double r_turret_y, double l_turret_x, double r_turret_x, int turret_num, int lod)
 {
     glPushMatrix();
         glRotated(90.0, 1.0, 0.0, 0.0);
@@ -134,15 +134,15 @@ void drawEquipment(double back_y, double l_equip_y, double r_equip_y, double l_t
         if (lod > 0)
         {
             // Left Equipment
-            drawEquipmentL(l_equip_y, l_turret_y, l_turret_x, lod - 1);
+            drawEquipmentL(l_equip_y, l_turret_y, l_turret_x, turret_num, lod - 1);
             // Right Equipment
-            drawEquipmentR(r_equip_y, r_turret_y, r_turret_x, lod - 1);
+            drawEquipmentR(r_equip_y, r_turret_y, r_turret_x, turret_num, lod - 1);
         }
 
     glPopMatrix();
 }
 
-void drawEquipmentL(double equip_y, double turret_y, double turret_x, int lod)
+void drawEquipmentL(double equip_y, double turret_y, double turret_x, int turret_num, int lod)
 {
     glPushMatrix();
         glTranslated(0.4, 0.0, -0.53);
@@ -173,13 +173,13 @@ void drawEquipmentL(double equip_y, double turret_y, double turret_x, int lod)
                 drawShip();
             glPopMatrix();
 
-            drawTurrets(LEFT, turret_y, turret_x, lod - 1);
+            drawTurrets(LEFT, turret_y, turret_x, turret_num, lod - 1);
         }
 
     glPopMatrix();
 }
 
-void drawEquipmentR(double equip_y, double turret_y, double turret_x, int lod)
+void drawEquipmentR(double equip_y, double turret_y, double turret_x, int turret_num, int lod)
 {
     glPushMatrix();
         glTranslated(-0.2, 0.0, -0.53);
@@ -209,37 +209,61 @@ void drawEquipmentR(double equip_y, double turret_y, double turret_x, int lod)
                 drawShip();
             glPopMatrix();
 
-            drawTurrets(RIGHT, turret_y, turret_x, lod - 1);
+            drawTurrets(RIGHT, turret_y, turret_x, turret_num, lod - 1);
         }
 
     glPopMatrix();
 }
 
-void drawCompleteTurret(double turret_y, double turret_x, int lod)
+void drawCompleteTurret(double turret_y, double turret_x, int turret_num, int lod)
 {
     glPushMatrix();
         glRotated(turret_y, 0.0, 1.0, 0.0);
-        drawTurret();
-        
-        glTranslated(0.0, 0.1, -1.1);
-        glRotated(-(180 - turret_x), 1.0, 0.0, 0.0);
-
-        if (lod > 0)
+        if (turret_num == 2)
         {
-            glPushMatrix();
-                glTranslated(-0.275, 0.0, 0.0);
-                drawCylinder(2.1, 0.1, 0.1);
-            glPopMatrix();
+            drawTurret2();
             
-            glPushMatrix();
-                glTranslated(0.275, 0.0, 0.0);
-                drawCylinder(2.1, 0.1, 0.1);
-            glPopMatrix();
+            glTranslated(0.0, 0.1, -1.1);
+            glRotated(-(180 - turret_x), 1.0, 0.0, 0.0);
+
+            if (lod > 0)
+            {
+                glPushMatrix();
+                    glTranslated(-0.275, 0.0, 0.0);
+                    drawCylinder(2.1, 0.1, 0.1);
+                glPopMatrix();
+                
+                glPushMatrix();
+                    glTranslated(0.275, 0.0, 0.0);
+                    drawCylinder(2.1, 0.1, 0.1);
+                glPopMatrix();
+            }
+        }
+        else
+        {
+            drawTurret3();
+
+            glTranslated(0.0, 0.1, -1.2);
+            glRotated(-(180 - turret_x), 1.0, 0.0, 0.0);
+            if (lod > 0)
+            {
+                drawCylinder(2.3, 0.14, 0.14);
+                
+                glPushMatrix();
+                    glTranslated(0.5, 0.0, 0.0);
+                    drawCylinder(2.3, 0.14, 0.14);
+                glPopMatrix();
+
+                glPushMatrix();
+                    glTranslated(-0.5, 0.0, 0.0);
+                    drawCylinder(2.3, 0.14, 0.14);
+                glPopMatrix();
+            }
         }
     glPopMatrix();
 }
 
-void drawTurrets(int dir, double turret_y, double turret_x, int lod)
+void drawTurrets(int dir, double turret_y, double turret_x, int turret_num, int lod)
 {
     glPushMatrix();
         glTranslated(dir * 1.35, 0.4, 0.0);
@@ -254,7 +278,7 @@ void drawTurrets(int dir, double turret_y, double turret_x, int lod)
             glPushMatrix();
                 glRotated(180.0, 0.0, 1.0, 0.0);
                 glScaled(0.45, 0.45, 0.45);
-                drawCompleteTurret(double(dir) * turret_y, turret_x, lod - 1);
+                drawCompleteTurret(double(dir) * turret_y, turret_x, turret_num, lod - 1);
             glPopMatrix();
         }
 
@@ -270,7 +294,7 @@ void drawTurrets(int dir, double turret_y, double turret_x, int lod)
             glPushMatrix();
                 glRotated(180.0, 0.0, 1.0, 0.0);
                 glScaled(0.45, 0.45, 0.45);
-                drawCompleteTurret(double(dir) * turret_y, turret_x, lod - 1);
+                drawCompleteTurret(double(dir) * turret_y, turret_x, turret_num, lod - 1);
             glPopMatrix();
         }
     glPopMatrix();
