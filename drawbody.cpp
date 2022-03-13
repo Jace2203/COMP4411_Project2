@@ -27,6 +27,16 @@ void drawTorso()
         drawSphere(0.4);
         glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
+
+    glPushMatrix();
+        glTranslated(0.175, -0.25, 1.05);
+        drawSphere(0.2);
+    glPopMatrix();
+
+    glPushMatrix();
+        glTranslated(-0.175, -0.25, 1.05);
+        drawSphere(0.2);
+    glPopMatrix();
 }
 
 void drawHead()
@@ -48,7 +58,7 @@ void drawArmL(double upper_y, double upper_z, double lower_x, double lower_z, in
         loadTexture(BLACK);
         glEnable(GL_TEXTURE_2D);
         drawSphere(0.11);
-        loadTexture(HAND_TOP);
+        loadTexture(HAND_LEFT);
 		drawCylinder(arm_length, 0.11, 0.1);
         //glDisable(GL_TEXTURE_2D);
 		
@@ -79,7 +89,7 @@ void drawArmR(double upper_y, double upper_z, double lower_x, double lower_z, in
         loadTexture(BLACK);
         glEnable(GL_TEXTURE_2D);
         drawSphere(0.11);
-        loadTexture(HAND_TOP);
+        loadTexture(HAND_RIGHT);
 		drawCylinder(arm_length, 0.11, 0.1);
         //glDisable(GL_TEXTURE_2D);
 
@@ -106,12 +116,14 @@ void drawLegL(double thigh_x, double thigh_y, double leg_x)
         glTranslated(0.3, 0.0, 0.0);
         glRotated(thigh_y, 0.0, 0.0, 1.0);
         glRotated(180.0 + thigh_x, 1.0, 0.0, 0.0);
+        glEnable(GL_TEXTURE_2D);
+        loadTexture(PINK);
         drawSphere(0.15);
         loadTexture(LEG_TOP);
-        glEnable(GL_TEXTURE_2D);
         drawCylinder(leg_length, 0.15, 0.12);
         glTranslated(0.0, 0.0, leg_length);
-        glDisable(GL_TEXTURE_2D);
+        //glDisable(GL_TEXTURE_2D);
+        loadTexture(LEG_DOWN);
         drawSphere(0.12);
 
         glPushMatrix();
@@ -131,12 +143,14 @@ void drawLegR(double thigh_x, double thigh_y, double leg_x)
         glTranslated(-0.3, 0.0, 0.0);
         glRotated(thigh_y, 0.0, 0.0, -1.0);
         glRotated(180.0 + thigh_x, 1.0, 0.0, 0.0);
+        glEnable(GL_TEXTURE_2D);
+        loadTexture(PINK);
         drawSphere(0.15);
         loadTexture(LEG_TOP);
-        glEnable(GL_TEXTURE_2D);
         drawCylinder(leg_length, 0.15, 0.12);
         glTranslated(0.0, 0.0, leg_length);
-        glDisable(GL_TEXTURE_2D);
+        //glDisable(GL_TEXTURE_2D);
+        loadTexture(LEG_DOWN);
         drawSphere(0.12);
 
         glPushMatrix();
@@ -325,10 +339,12 @@ void initTexture()
 {
     char image[][30] = {
         "black.bmp",
+        "pink.bmp",
         "leg_top.bmp",
         "leg_down.bmp",
         "body2.bmp",
-        "hand.bmp"
+        "hand_left.bmp",
+        "hand_right.bmp"
     };
 
     for(int i = 0; i < NUM; ++i)

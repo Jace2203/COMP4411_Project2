@@ -12,10 +12,10 @@ enum {
 };
 
 enum {
-    BLACK,
+    BLACK, PINK,
     LEG_TOP, LEG_DOWN,
     BODY,
-    HAND_TOP,
+    HAND_LEFT, HAND_RIGHT,
     NUM
 };
 
