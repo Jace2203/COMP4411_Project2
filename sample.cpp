@@ -44,63 +44,62 @@ void SampleModel::draw()
 {
     ModelerView::draw();
 
-	glPushMatrix();
-	glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
+	// glPushMatrix();
+	// glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
 
-		int lod = int(VAL(LOD));
-		// Torso
-		glPushMatrix();
-			glRotated(-90.0, 1.0, 0.0, 0.0);
+	// 	int lod = int(VAL(LOD));
+	// 	// Torso
+	// 	glPushMatrix();
+	// 		glRotated(-90.0, 1.0, 0.0, 0.0);
 
-			loadTexture("body2.bmp");
-			glEnable(GL_TEXTURE_2D);
+	// 		drawTorso();
 
-			drawTorso();
+	// 		if (lod > 0)
+	// 		{
+	// 			drawHead();
 
-			glDisable(GL_TEXTURE_2D);
-
-			if (lod > 0)
-			{
-				drawHead();
-
-				drawArmL(VAL(L_UPPER_ARM_YROT), VAL(L_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
-				drawArmR(VAL(R_UPPER_ARM_YROT), VAL(R_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
+	// 			drawArmL(VAL(L_UPPER_ARM_YROT), VAL(L_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
+	// 			drawArmR(VAL(R_UPPER_ARM_YROT), VAL(R_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
 	
-				loadTexture("leg.bmp");
-				glEnable(GL_TEXTURE_2D);
+	// 			glEnable(GL_TEXTURE_2D);
 
-				drawLegL(VAL(L_LEG_XROT));
-				drawLegR(VAL(R_LEG_XROT));
+	// 			drawLegL(VAL(L_LEG_XROT));
+	// 			drawLegR(VAL(R_LEG_XROT));
 
-				glDisable(GL_TEXTURE_2D);
+	// 			glDisable(GL_TEXTURE_2D);
 
-				drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), lod);
-			}
+	// 			drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), lod);
+	// 		}
 
-		glPopMatrix();
+	// 	glPopMatrix();
 
-	glPopMatrix();
+	// glPopMatrix();
 
-
-/*
 	int init = 0;
 
-    num_point = 4;
+    num_point = 9;
+
+	double outer = 1, scale = 1.2;
 
 	ctrl = new Point[num_point];
-	ctrl[0] = Point(+0.15, +1.0, +0.0);
-	ctrl[1] = Point(+0.00, +0.8, +0.0);
-	ctrl[2] = Point(+0.00, +0.35, +0.0);
-	ctrl[3] = Point(-0.00, +0.0, +0.0);
+	ctrl[0] = Point(+0.0 * outer, +0.0 * outer * scale, +0.0);
+	ctrl[1] = Point(-1.0 * outer, +0.0 * outer * scale, +0.0);
+	ctrl[2] = Point(-1.0 * outer, +1.0 * outer * scale, +0.0);
+	ctrl[3] = Point(-1.0 * outer, +2.0 * outer * scale, +0.0);
+	ctrl[4] = Point(+0.0 * outer, +2.0 * outer * scale, +0.0);
+	ctrl[5] = Point(+1.0 * outer, +2.0 * outer * scale, +0.0);
+	ctrl[6] = Point(+1.0 * outer, +1.0 * outer * scale, +0.0);
+	ctrl[7] = Point(+1.0 * outer, +0.0 * outer * scale, +0.0);
+	ctrl[8] = ctrl[0];
 
 	num_ctrl2 = 4;
 
 	ctrl2 = new Point[num_ctrl2];
 
-	ctrl2[0] = Point(+0.0, +0.0, +0.0);
-	ctrl2[1] = Point(+0.0, +0.0, -0.3);
-	ctrl2[2] = Point(+0.5, +0.0, -0.3);
-	ctrl2[3] = Point(+0.5, +0.0, +0.0);
+	ctrl2[0] = Point(+0.0 * outer * 2, +1.0 * outer * 2, +0.0);
+	ctrl2[1] = Point(+0.0 * outer * 2, +0.5 * outer * 2, +0.0);
+	ctrl2[2] = Point(+1.0 * outer * 2, +0.5 * outer * 2, +0.0);
+	ctrl2[3] = Point(+1.0 * outer * 2, +0.0 * outer * 2, +0.0);
 
 	int num_t = 101;
 
@@ -200,14 +199,8 @@ void SampleModel::draw()
 	}
 	else
 	{
-		for(int i = 1; i < num_t-1; ++i)
+		for(int i = 0; i < num_t-2; ++i)
 		{
-			if (i % 3 == 0)
-				setDiffuseColor(1, 0, 0);
-			else if (i % 3 == 1)
-				setDiffuseColor(0, 1, 0);
-			else
-				setDiffuseColor(0, 0, 1);
 			glBegin(GL_TRIANGLE_STRIP);
 			for(int j = 0; j < num_t; ++j)
 			{
@@ -217,7 +210,6 @@ void SampleModel::draw()
 			glEnd();
 		}
 	}
-	*/
 }
 
 int main()
