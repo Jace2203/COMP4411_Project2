@@ -9,6 +9,8 @@
 #include "complexshape.h"
 #include "drawbody.h"
 
+#include "cmath"
+
 // To make a SampleModel, we inherit off of ModelerView
 class SampleModel : public ModelerView 
 {
@@ -29,6 +31,9 @@ ModelerView* createSampleModel(int x, int y, int w, int h, char *label)
 double ani_height = -(head_size + torso_height)/3,
 	   cur_height = 0,
 	   chg_height = 0,
+	   ani_theta = acos(-ani_height)*180/M_PI,
+	   cur_theta = 0,
+	   chg_theta = 0,
 	   ani_angle  = 15,
 	   cur_angle  = ani_angle,
 	   chg_angle  = 0,
@@ -71,9 +76,15 @@ void SampleModel::draw()
 		else if (cur_wave <= -ani_wave)
 			chg_wave = ani_wave * time_wave /15;
 
+		if (cur_theta >= ani_theta)
+			chg_theta = -ani_theta /15;
+		else if (cur_theta <= 0)
+			chg_theta = ani_theta /15;
+
 		cur_height += chg_height;
 		cur_angle += chg_angle;
 		cur_wave += chg_wave;
+		cur_theta += chg_theta;
 	}
 
 	glPushMatrix();
@@ -99,12 +110,17 @@ void SampleModel::draw()
 				drawArmL(VAL(L_UPPER_ARM_YROT), LZ, 45.0, 0.0, lod - 1);
 				drawArmR(VAL(R_UPPER_ARM_YROT), RZ, 45.0, 0.0, lod - 1);
 
-				glTranslated(0, 0, -cur_height);
+				//glTranslated(0, 0, -cur_height);
 
-				drawLegL(VAL(L_THIGH_XROT), VAL(L_THIGH_YROT), VAL(L_LEG_XROT));
-				drawLegR(VAL(R_THIGH_XROT), VAL(R_THIGH_YROT), VAL(R_LEG_XROT));
+				double LTX = (ModelerApplication::Instance()->IsAnimating()) ? -cur_theta : VAL(L_THIGH_XROT),
+					   RTX = (ModelerApplication::Instance()->IsAnimating()) ? -cur_theta : VAL(R_THIGH_XROT),
+					   LLX = (ModelerApplication::Instance()->IsAnimating()) ? 2*cur_theta : VAL(L_LEG_XROT),
+					   RLX = (ModelerApplication::Instance()->IsAnimating()) ? 2*cur_theta : VAL(R_LEG_XROT);
 
-				glTranslated(0, 0, cur_height);
+				drawLegL(LTX, VAL(L_THIGH_YROT), LLX);
+				drawLegR(RTX, VAL(R_THIGH_YROT), RLX);
+
+				//glTranslated(0, 0, cur_height);
 
 				drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), lod);
 			}
