@@ -15,13 +15,15 @@ void LegIK(double* lengths, double* angles, double** limits, const Vec3d& target
     int count = 0;
 
     // Init value
-    Vec3d thigh = getRotY(angles[1]) * getRotX(angles[0]) * Vec3d(0.0, -lengths[0], 0.0);
-    Vec3d leg = getRotY(angles[1]) * getRotX(angles[0] + angles[2]) * Vec3d(0.0, -lengths[1], 0.0);
+    Vec3d thigh = getRotX(angles[0]) * Vec3d(0.0, -lengths[0], 0.0);
+    Vec3d leg = getRotX(angles[0] + angles[2]) * Vec3d(0.0, -lengths[1], 0.0);
     Vec3d whole = thigh + leg;
 
-    while (count < 10 && (whole - target).length2() > 0.0001)
+    Vec3d rot_target = getRotY(getAnglesY(target)) * target;
+
+    while (count < 10 && (whole - rot_target).length2() > 0.0001)
     {
-        Vec3d temp_target = target;
+        Vec3d temp_target = rot_target;
 
         // Forward
         Vec3d temp_leg = temp_target - thigh;
@@ -34,78 +36,42 @@ void LegIK(double* lengths, double* angles, double** limits, const Vec3d& target
         thigh *= lengths[0];
 
         // Backward
-        temp_target = target;
+        temp_target = rot_target;
         leg = temp_target - thigh;
         leg.normalize();
         leg *= lengths[1];
-
-
-        // double* thigh_angles = getAngles(thigh);
-        // double* leg_angles = getAngles(leg);
-
-        // if (thigh_angles[0] > limits[0][1]) thigh_angles[0] = limits[0][1];
-        // if (thigh_angles[0] < limits[0][0]) thigh_angles[0] = limits[0][0];
-        
-        // if (thigh_angles[1] > limits[1][1]) thigh_angles[0] = limits[1][1];
-        // if (thigh_angles[1] < limits[1][0]) thigh_angles[0] = limits[1][0];
-
-        // leg_angles[0] = thigh_angles[0] - leg_angles[0];
-        
-        // if (leg_angles[0] > limits[2][1]) leg_angles[0] = limits[2][1];
-        // if (leg_angles[0] < limits[2][0]) leg_angles[0] = limits[2][0];
-
-        // angles[0] = thigh_angles[0];
-        // angles[1] = thigh_angles[1];
-        // angles[2] = leg_angles[0];
-
-        // // std::cout << angles[0] << " " << angles[1] << " " << angles[2] << std::endl;
-        // thigh = getRotY(angles[1]) * getRotX(angles[0]) * Vec3d(0.0, -lengths[0], 0.0);
-        // leg = getRotY(angles[1]) * getRotX(angles[0] + angles[2]) * Vec3d(0.0, -lengths[1], 0.0);
-
-        // delete[] thigh_angles;
-        // delete[] leg_angles;
 
         whole = thigh + leg;
         count++;
     }
 
-    std::cout << thigh << " " << leg << std::endl;
+    angles[0] = getAnglesX(thigh);
+    angles[1] = getAnglesY(target);
+    angles[2] = getAnglesX(leg);
 
-    double* thigh_angles = getAngles(thigh);
-    double* leg_angles = getAngles(leg);
-
-    if (thigh_angles[0] > limits[0][1]) thigh_angles[0] = limits[0][1];
-    if (thigh_angles[0] < limits[0][0]) thigh_angles[0] = limits[0][0];
+    if (angles[0] > limits[0][1]) angles[0] = limits[0][1];
+    if (angles[0] < limits[0][0]) angles[0] = limits[0][0];
     
-    if (thigh_angles[1] > limits[1][1]) thigh_angles[1] = limits[1][1];
-    if (thigh_angles[1] < limits[1][0]) thigh_angles[1] = limits[1][0];
+    if (angles[1] > limits[1][1]) angles[1] = limits[1][1];
+    if (angles[1] < limits[1][0]) angles[1] = limits[1][0];
 
-    leg_angles[0] = thigh_angles[0] + leg_angles[0] + leg_angles[0];
+    angles[2] = abs(angles[0] - angles[2]);
     
-    if (leg_angles[0] > limits[2][1]) leg_angles[0] = limits[2][1];
-    if (leg_angles[0] < limits[2][0]) leg_angles[0] = limits[2][0];
-
-    angles[0] = thigh_angles[0];
-    angles[1] = thigh_angles[1];
-    angles[2] = leg_angles[0];
-
-    // std::cout << angles[0] << " " << angles[1] << " " << angles[2] << std::endl;
-
-    delete[] thigh_angles;
-    delete[] leg_angles;
+    if (angles[2] > limits[2][1]) angles[2] = limits[2][1];
+    if (angles[2] < limits[2][0]) angles[2] = limits[2][0];
 }
 
-double* getAngles(Vec3d vec)
+double getAnglesX(const Vec3d& vec)
 {
-    double* result = new double[2];
+    return atan2(-vec[2], -vec[1]) / M_PI * 180;
+}
 
-    if (abs(vec[0] - 0) < 0.0001)
-        result[1] = 0;
-    else
-        result[1] = atan2(vec[2], vec[0]) / M_PI * 180;
-
-    vec = getRotY(-result[1]) * vec;
-    result[0] = atan2(-vec[2], -vec[1]) / M_PI * 180;
+double getAnglesY(const Vec3d& vec)
+{
+    double result = 0;
+    
+    if (abs(vec[0] - 0) > 0.00001)
+        result = atan2(-vec[0], -vec[2]) / M_PI * 180;
 
     return result;
 }

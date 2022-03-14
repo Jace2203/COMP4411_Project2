@@ -13,7 +13,8 @@
 // To make a SampleModel, we inherit off of ModelerView
 class SampleModel : public ModelerView 
 {
-	double**	limits;
+	double**	limits_L;
+	double**	limits_R;
 	double*		length;
 
 	double*		angles_L;
@@ -25,18 +26,28 @@ public:
     SampleModel(int x, int y, int w, int h, char *label) 
         : ModelerView(x,y,w,h,label)
 	{
-		limits = new double*[3];
+		limits_L = new double*[3];
+		limits_R = new double*[3];
 		for (int i = 0; i < 3; i++)
-			limits[i] = new double[2];
+		{
+			limits_L[i] = new double[2];
+			limits_R[i] = new double[2];
+		}
 
-		limits[0][0] = -60;
-		limits[0][1] = 50;
+		limits_L[0][0] = -60;
+		limits_L[0][1] = 50;
+		limits_R[0][0] = -60;
+		limits_R[0][1] = 50;
 		
-		limits[1][0] = 0;
-		limits[1][1] = 90;
+		limits_L[1][0] = -90;
+		limits_L[1][1] = 0;
+		limits_R[1][0] = 0;
+		limits_R[1][1] = 90;
 		
-		limits[2][0] = 0;
-		limits[2][1] = 140;
+		limits_L[2][0] = 0;
+		limits_L[2][1] = 140;
+		limits_R[2][0] = 0;
+		limits_R[2][1] = 140;
 
 		last_target_L = new Vec3d(VAL(L_TARGET_X), VAL(L_TARGET_Y) - 0.9962, VAL(L_TARGET_Z));
 		last_target_R = new Vec3d(VAL(R_TARGET_X), VAL(R_TARGET_Y) - 0.9962, VAL(R_TARGET_Z));
@@ -59,9 +70,13 @@ public:
 	~SampleModel()
 	{
 		for (int i = 0; i < 3; i++)
-			delete[] limits[i];
+		{
+			delete[] limits_L[i];
+			delete[] limits_R[i];
+		}
 
-		delete[] limits;
+		delete[] limits_L;
+		delete[] limits_R;
 		delete[] length;
 
 		delete[] angles_L;
@@ -103,21 +118,22 @@ void SampleModel::draw()
 			(*last_target_L)[2] = VAL(L_TARGET_Z);
 			// std::cout << "L " << *last_target_L << std::endl;
 
-			LegIK(length, angles_L, limits, *last_target_L);
+			LegIK(length, angles_L, limits_L, *last_target_L);
+			angles_L[1] *= -1;
 		}
 
-		// if (*last_target_R != Vec3d(VAL(R_TARGET_X), VAL(R_TARGET_Y) - 0.9962, VAL(R_TARGET_Z)))
-		// {
-		// 	angles_R[0] = VAL(R_THIGH_XROT);
-		// 	angles_R[1] = VAL(R_THIGH_YROT);
-		// 	angles_R[2] = VAL(R_LEG_XROT);
+		if (*last_target_R != Vec3d(VAL(R_TARGET_X), VAL(R_TARGET_Y) - 0.9962, VAL(R_TARGET_Z)))
+		{
+			angles_R[0] = VAL(R_THIGH_XROT);
+			angles_R[1] = VAL(R_THIGH_YROT);
+			angles_R[2] = VAL(R_LEG_XROT);
 
-		// 	(*last_target_R)[0] = VAL(R_TARGET_X);
-		// 	(*last_target_R)[1] = VAL(R_TARGET_Y) - 0.9962;
-		// 	(*last_target_R)[2] = VAL(R_TARGET_Z);
+			(*last_target_R)[0] = VAL(R_TARGET_X);
+			(*last_target_R)[1] = VAL(R_TARGET_Y) - 0.9962;
+			(*last_target_R)[2] = VAL(R_TARGET_Z);
 
-		// 	LegIK(length, angles_R, limits, *last_target_R);
-		// }
+			LegIK(length, angles_R, limits_R, *last_target_R);
+		}
 	}
 
 	// // draw the floor
@@ -209,12 +225,12 @@ int main()
 	controls[R_TURRET_XROT] = ModelerControl("Right Turret X Rotation", 10, 85, 1, 36);
 
 	// Inverse Kinematics
-	controls[L_TARGET_X] = ModelerControl("Left Leg Target X", -0.5, 0.5, 0.01f, 0);
-	controls[R_TARGET_X] = ModelerControl("Right Leg Target X", -0.5, 0.5, 0.01f, 0);
-	controls[L_TARGET_Y] = ModelerControl("Left Leg Target Y", -0.5, 0.5, 0.01f, 0);
-	controls[R_TARGET_Y] = ModelerControl("Right Leg Target Y", -0.5, 0.5, 0.01f, 0);
-	controls[L_TARGET_Z] = ModelerControl("Left Leg Target Z", -0.5, 0.5, 0.01f, 0);
-	controls[R_TARGET_Z] = ModelerControl("Right Leg Target Z", -0.5, 0.5, 0.01f, 0);
+	controls[L_TARGET_X] = ModelerControl("Left Leg Target X", 0, 0.5, 0.01f, 0);
+	controls[R_TARGET_X] = ModelerControl("Right Leg Target X", -0.5, 0, 0.01f, 0);
+	controls[L_TARGET_Y] = ModelerControl("Left Leg Target Y", 0, 0.5, 0.01f, 0);
+	controls[R_TARGET_Y] = ModelerControl("Right Leg Target Y", 0, 0.5, 0.01f, 0);
+	controls[L_TARGET_Z] = ModelerControl("Left Leg Target Z", -0.5, 0, 0.01f, 0);
+	controls[R_TARGET_Z] = ModelerControl("Right Leg Target Z", -0.5, 0, 0.01f, 0);
 
 	controls[APPLY_IK] = ModelerControl("Apply IK", 0, 1, 1, 0);
 
