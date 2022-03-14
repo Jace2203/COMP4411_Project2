@@ -3,6 +3,10 @@
 #include "modelerdraw.h"
 #include "complexshape.h"
 
+#include "vec.h"
+#include "bitmap.h"
+
+
 void drawTorso()
 {
 	glPushMatrix();
@@ -303,5 +307,29 @@ void drawTurrets(int dir, double turret_y, double turret_x, int turret_num, int 
                 drawCompleteTurret(double(dir) * turret_y, turret_x, turret_num, lod - 1);
             glPopMatrix();
         }
+    glPopMatrix();
+}
+
+void drawHair()
+{
+    double hairLength = 0.4 + head_size, theta;
+    double size = 0.4;
+
+    glPushMatrix();
+
+        glRotated(90.0, 1.0, 0.0, 0.0);
+        glTranslated(0.0, head_size + torso_height + 0.2, 0.0);
+        //drawSphere(head_size);
+
+        for(int i = 220; i < 320; ++i)
+        {
+            glBegin(GL_POLYGON);
+                glVertex3d(size*cos(i*M_PI/180), 0, size*sin(i*M_PI/180));
+                glVertex3d(size*cos((i)*M_PI/180), -hairLength, size*sin((i)*M_PI/180));
+                glVertex3d(size*cos((i+1)*M_PI/180), -hairLength, size*sin((i+1)*M_PI/180));
+                glVertex3d(size*cos((i+1)*M_PI/180), 0, size*sin((i+1)*M_PI/180));
+            glEnd();
+        }
+
     glPopMatrix();
 }

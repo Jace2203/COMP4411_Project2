@@ -15,6 +15,8 @@ void drawTorso();
 
 void drawHead();
 
+void drawHair();
+
 void drawArmL(double upper_y, double upper_z, double lower_x, double lower_z, int lod);
 void drawArmR(double upper_y, double upper_z, double lower_x, double lower_z, int lod);
 

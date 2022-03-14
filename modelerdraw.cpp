@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <math.h>
 
+#include "bitmap.h"
+
 // ********************************************************
 // Support functions from previous version of modeler
 // ********************************************************
@@ -293,9 +295,46 @@ void drawBox( double x, double y, double z )
     }
 }
 
+void loadTexture(char* bmp)
+{
+    int width, height;
+
+    unsigned char* data = readBMP(bmp, width, height);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data );
+
+    // glEnable(GL_TEXTURE_2D);
+
+    //glDisable(GL_TEXTURE_2D);
+}
+
 void drawTextureBox( double x, double y, double z )
 {
     // NOT IMPLEMENTED, SORRY (ehsu)
+
+    int width, height;
+
+    unsigned char* data = readBMP("t1.bmp", width, height);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data );
+
+    glEnable(GL_TEXTURE_2D);
+
+    drawCylinder(1, 1, 1);
+    
+    glDisable(GL_TEXTURE_2D);
 }
 
 void drawCylinder( double h, double r1, double r2 )
@@ -330,12 +369,13 @@ void drawCylinder( double h, double r1, double r2 )
         GLUquadricObj* gluq;
         
         /* GLU will again do the work.  draw the sides of the cylinder. */
+
         gluq = gluNewQuadric();
         gluQuadricDrawStyle( gluq, GLU_FILL );
         gluQuadricTexture( gluq, GL_TRUE );
         gluCylinder( gluq, r1, r2, h, divisions, divisions);
         gluDeleteQuadric( gluq );
-        
+
         if ( r1 > 0.0 )
         {
         /* if the r1 end does not come to a point, draw a flat disk to
@@ -416,14 +456,218 @@ void drawTriangle( double x1, double y1, double z1,
     }
 }
 
+void setcircle(double inner, double outer)
+{
+    int num_point = 9;
 
+	Point* ctrl = new Point[num_point];
+	ctrl[0] = Point(+0.0 * outer, +0.0 * outer, +0.0);
+	ctrl[1] = Point(-1.0 * outer, +0.0 * outer, +0.0);
+	ctrl[2] = Point(-1.0 * outer, +1.0 * outer, +0.0);
+	ctrl[3] = Point(-1.0 * outer, +2.0 * outer, +0.0);
+	ctrl[4] = Point(+0.0 * outer, +2.0 * outer, +0.0);
+	ctrl[5] = Point(+1.0 * outer, +2.0 * outer, +0.0);
+	ctrl[6] = Point(+1.0 * outer, +1.0 * outer, +0.0);
+	ctrl[7] = Point(+1.0 * outer, +0.0 * outer, +0.0);
+	ctrl[8] = ctrl[0];
 
+	int num_ctrl2 = 9;
 
+	Point* ctrl2 = new Point[num_ctrl2];
+	ctrl2[0] = Point(+0.0 * inner, +0.0 * inner, +0.0);
+	ctrl2[1] = Point(-1.0 * inner, +0.0 * inner, +0.0);
+	ctrl2[2] = Point(-1.0 * inner, +1.0 * inner, +0.0);
+	ctrl2[3] = Point(-1.0 * inner, +2.0 * inner, +0.0);
+	ctrl2[4] = Point(+0.0 * inner, +2.0 * inner, +0.0);
+	ctrl2[5] = Point(+1.0 * inner, +2.0 * inner, +0.0);
+	ctrl2[6] = Point(+1.0 * inner, +1.0 * inner, +0.0);
+	ctrl2[7] = Point(+1.0 * inner, +0.0 * inner, +0.0);
+	ctrl2[8] = Point(+0.0 * inner, +0.0 * inner, +0.0);
+}
 
+void calpoint(Point* ctl, Point** point, int num_pts, int num_t)
+{
+	Point** temp = new Point*[num_pts];
+	for(int i = 0; i < num_pts; ++i)
+		temp[i] = new Point[num_t];
 
+    double t, diff = 1.0 / (num_t -1);
+    for(int j = 0; j < num_pts-1; ++j)
+    {
+        t = 0;
+        for(int i = 0; i < num_t; ++i)
+        {
+            temp[j][i].x = (1-t)*ctl[j].x+t*ctl[j+1].x;
+            temp[j][i].y = (1-t)*ctl[j].y+t*ctl[j+1].y;
+            temp[j][i].z = (1-t)*ctl[j].z+t*ctl[j+1].z;
+            t += diff;
+        }
+    }
 
+    for(int i = num_pts-2; i > 0; --i)
+        for(int j = 0; j < i; ++j)
+        {
+            t = 0;
+            for(int k = 0; k < num_t; ++k)
+            {
+                temp[j][k].x = (1-t)*temp[j][k].x+t*temp[j+1][k].x;
+                temp[j][k].y = (1-t)*temp[j][k].y+t*temp[j+1][k].y;
+                temp[j][k].z = (1-t)*temp[j][k].z+t*temp[j+1][k].z;
+                t += diff;
+            }
+        }
 
+    *point = new Point[num_t];
+    for(int i = 0; i < num_t; ++i)
+    {
+        (*point)[i].x = temp[0][i].x;
+        (*point)[i].y = temp[0][i].y;
+        (*point)[i].z = temp[0][i].z;
+    }
+}
 
+void drawCurve(Point*** draw_pts, int num_t, double back_y)
+{
+    if (!*draw_pts)
+    {
+        int num_point = 9;
+        double outer = 0.2, scale = 1;
 
+        Point* ctrl = new Point[num_point];
+        ctrl[0] = Point(+0.0 * outer, +0.0 * outer * scale, +0.0);
+        ctrl[1] = Point(-1.0 * outer, +0.0 * outer * scale, +0.0);
+        ctrl[2] = Point(-1.0 * outer, +1.0 * outer * scale, +0.0);
+        ctrl[3] = Point(-1.0 * outer, +2.0 * outer * scale, +0.0);
+        ctrl[4] = Point(+0.0 * outer, +2.0 * outer * scale, +0.0);
+        ctrl[5] = Point(+1.0 * outer, +2.0 * outer * scale, +0.0);
+        ctrl[6] = Point(+1.0 * outer, +1.0 * outer * scale, +0.0);
+        ctrl[7] = Point(+1.0 * outer, +0.0 * outer * scale, +0.0);
+        ctrl[8] = ctrl[0];
 
+        int num_ctrl2 = 4;
 
+        Point* ctrl2 = new Point[num_ctrl2];
+
+        ctrl2[0] = Point(+0.0 * outer * 2, +1.0 * outer * 2, +0.0);
+        ctrl2[1] = Point(+0.0 * outer * 2, +0.5 * outer * 2, +0.0);
+        ctrl2[2] = Point(+1.0 * outer * 2, +0.5 * outer * 2, +0.0);
+        ctrl2[3] = Point(+1.0 * outer * 2, +0.0 * outer * 2, +0.0);
+
+        Point* pts = nullptr;
+        Point* path = nullptr;
+
+        calpoint(ctrl, &pts, num_point, num_t);
+        calpoint(ctrl2, &path, num_ctrl2, num_t);
+
+        *draw_pts = new Point* [num_t];
+        for(int i = 0; i < num_t; ++i)
+        {
+            (*draw_pts)[i] = new Point[num_t];
+            int previous, next;
+            if (i == 0)
+            {
+                previous = 0;
+                next = 1;
+            }
+            else if (i == num_t)
+            {
+                previous = num_t - 1;
+                next = num_t;
+            }
+            else
+            {
+                previous = i - 1;
+                next = i + 1;
+            }
+
+            double dx = path[next].x - path[previous].x, dy = path[next].y - path[previous].y, dz = path[next].z - path[previous].z;
+            double theta, theta2 = 0;
+
+            theta = acos(-dy/(sqrt(pow(dx, 2)+pow(dy, 2))));
+
+            if (dx < 0)
+                theta = 2*M_PI - theta;
+
+            theta = theta - M_PI/2;
+
+            //printf("%1f\n", theta*180/M_PI);
+            for(int j = 0; j < num_t; ++j)
+            {
+                double x = pts[j].x, y = pts[j].y, z = pts[j].z;
+                double x1 = x, y1 = y*cos(theta) - z*sin(theta), z1 = y*sin(theta)+ z*cos(theta);  // x axis rotate
+                double x2 = x1*cos(theta2)+ z1*sin(theta2), y2 = y1, z2 = -x1*sin(theta2)+ z1*cos(theta2);  //y axis rotate
+                //x2 = x; y2 = y; z2 = z;
+                
+                (*draw_pts)[i][j].x = x2+path[i].z;
+                (*draw_pts)[i][j].y = y2+path[i].y;
+                (*draw_pts)[i][j].z = z2-path[i].x;
+            }
+        }
+    }
+
+	// for(int i = 0; i < num_point; ++i)
+	// {
+	// 	glPushMatrix();
+	// 	glTranslated(ctrl[i].x, ctrl[i].y, ctrl[i].z);
+	// 	drawSphere(0.1);
+	// 	glPopMatrix();
+	// }
+
+	// for(int i = 0; i < num_ctrl2; ++i)
+	// {
+	// 	glPushMatrix();
+	// 	glRotated(90, 0, 1, 0);
+	// 	glTranslated(ctrl2[i].x, ctrl2[i].y, ctrl2[i].z);
+	// 	drawSphere(0.1);
+	// 	glPopMatrix();
+	// }
+
+	// glBegin(GL_LINE_STRIP);
+	// for(int i = 0; i < num_t; ++i)
+	// 	glVertex3d(pts[i].x, pts[i].y, pts[i].z);
+	// glEnd();
+
+	// glPushMatrix();
+	// glRotated(90, 0, 1, 0);
+	// glBegin(GL_LINE_STRIP);
+	// for(int i = 0; i < num_t; ++i)
+	// 	glVertex3d(path[i].x, path[i].y, path[i].z);
+	// glEnd();
+	// glPopMatrix();
+
+	// if (!VAL(MODE))
+	// {
+	// 	for(int i = 1; i < num_t-1; ++i)
+	// 	{
+	// 		glBegin(GL_LINE_STRIP);
+	// 		for(int j = 0; j < num_t; ++j)
+	// 			glVertex3d(draw_pts[i][j].x, draw_pts[i][j].y, draw_pts[i][j].z);
+	// 		glEnd();
+	// 	}
+	// }
+	// else
+	// {
+        glPushMatrix();
+        // glRotated(180.0+back_y, 0.0, 1.0, 0.0);
+        // glTranslated(0.0, 0.8, 1.65);
+
+        glRotated(180.0, 0.0, 1.0, 0.0);
+        glTranslated(0.0, 0.3, 0.45);
+
+        glRotated(back_y, 0.0, 1.0, 0.0);
+        glTranslated(0, 0.5, 1.2);
+
+		for(int i = 0; i < num_t-2; ++i)
+		{
+			glBegin(GL_TRIANGLE_STRIP);
+			for(int j = 0; j < num_t; ++j)
+			{
+				glVertex3d((*draw_pts)[i][j].x, (*draw_pts)[i][j].y, (*draw_pts)[i][j].z);
+				glVertex3d((*draw_pts)[i+1][j].x, (*draw_pts)[i+1][j].y, (*draw_pts)[i+1][j].z);
+			}
+			glEnd();
+		}
+
+        glPopMatrix();
+	//}
+}

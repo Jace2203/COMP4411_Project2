@@ -28,6 +28,7 @@ enum SampleModelControls
 	L_TARGET_Y, R_TARGET_Y,
 	L_TARGET_Z, R_TARGET_Z,
 	APPLY_IK,
+	MODE,
 	NUMCONTROLS
 };
 

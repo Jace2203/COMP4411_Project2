@@ -19,6 +19,10 @@ static int r = 4;
 
 #include <cstring>
 
+#include <cmath>
+
+class Point;
+
 // To make a SampleModel, we inherit off of ModelerView
 class SampleModel : public ModelerView 
 {
@@ -113,13 +117,12 @@ ModelerView* createSampleModel(int x, int y, int w, int h, char *label)
     return new SampleModel(x,y,w,h,label); 
 }
 
+Point** draw_pts = nullptr;
+
 // We are going to override (is that the right word?) the draw()
 // method of ModelerView to draw out SampleModel
 void SampleModel::draw()
 {
-    // This call takes care of a lot of the nasty projection 
-    // matrix stuff.  Unless you want to fudge directly with the 
-	// projection matrix, don't bother with this ...
     ModelerView::draw();
 	
 	glEnable( GL_LIGHT0 );
@@ -169,7 +172,7 @@ void SampleModel::draw()
 	// drawBox(10,0.01f,10);
 	// glPopMatrix();
 
-	// if (VAL(DLS))
+	// if (VAL(DLS))4
 	// {
 	// 	char axiom[65536*6] = "X";
 	// 	for(int i = 0; i < VAL(IT); ++i)
@@ -260,8 +263,9 @@ void SampleModel::draw()
 			}
 
 		glPopMatrix();
-
 	glPopMatrix();
+
+	drawCurve(&draw_pts, 101, VAL(BACK_YROT));
 }
 
 int main()
@@ -326,6 +330,9 @@ int main()
 	controls[R_TARGET_Z] = ModelerControl("Right Leg Target Z", -0.5, 0, 0.01f, 0);
 
 	controls[APPLY_IK] = ModelerControl("Apply IK", 0, 1, 1, 0);
+
+	// Curve Mode
+	controls[MODE] = ModelerControl("Mode", 0, 1, 1, 0);
 
     ModelerApplication::Instance()->Init(&createSampleModel, controls, NUMCONTROLS);
     return ModelerApplication::Instance()->Run();

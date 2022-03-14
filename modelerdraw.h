@@ -10,6 +10,18 @@
 
 #include "modelerglobals.h"
 
+class Point
+{
+public:
+
+	Point() :x(0), y(0), z(0) {}
+	Point(double x, double y, double z) :x(x), y(y), z(z) {}
+
+	double x;
+	double y;
+	double z;
+};
+
 
 enum DrawModeSetting_t 
 { NONE=0, NORMAL, WIREFRAME, FLATSHADE, };
@@ -83,6 +95,8 @@ void drawSphere(double r);
 // Draw an axis-aligned box from origin to (x,y,z)
 void drawBox( double x, double y, double z );
 
+void loadTexture(char* bmp);
+
 // Draw an axis-aligned texture box from origin to (x,y,z)
 void drawTextureBox( double x, double y, double z );
 
@@ -93,5 +107,10 @@ void drawCylinder( double h, double r1, double r2 );
 void drawTriangle( double x1, double y1, double z1,
 			       double x2, double y2, double z2,
 			       double x3, double y3, double z3 );
+
+void setcircle(double inner, double outer);
+void calpoint(Point* ctrl, Point** pts, int num_pts, int num_t);
+
+void drawCurve(Point*** draw_pts, int num_t, double back_y);
 
 #endif
