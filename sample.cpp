@@ -30,13 +30,7 @@ ModelerView* createSampleModel(int x, int y, int w, int h, char *label)
     return new SampleModel(x,y,w,h,label); 
 }
 
-Point* ctrl = nullptr;	// ctrl points of circle curve
-Point* pts = nullptr;	// actual circle curve
-Point* ctrl2 = nullptr;	// ctrl points of path curve
-Point* path = nullptr;	// actual path curve
 Point** draw_pts = nullptr;
-int num_point = 0;
-int num_ctrl2 = 0;
 
 // We are going to override (is that the right word?) the draw()
 // method of ModelerView to draw out SampleModel
@@ -44,172 +38,34 @@ void SampleModel::draw()
 {
     ModelerView::draw();
 
-	// glPushMatrix();
-	// glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
+	glPushMatrix();
+	glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
 
-	// 	int lod = int(VAL(LOD));
-	// 	// Torso
-	// 	glPushMatrix();
-	// 		glRotated(-90.0, 1.0, 0.0, 0.0);
+		int lod = int(VAL(LOD));
+		// Torso
+		glPushMatrix();
+			glRotated(-90.0, 1.0, 0.0, 0.0);
 
-	// 		drawTorso();
+			drawTorso();
 
-	// 		if (lod > 0)
-	// 		{
-	// 			drawHead();
-
-	// 			drawArmL(VAL(L_UPPER_ARM_YROT), VAL(L_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
-	// 			drawArmR(VAL(R_UPPER_ARM_YROT), VAL(R_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
-	
-	// 			glEnable(GL_TEXTURE_2D);
-
-	// 			drawLegL(VAL(L_LEG_XROT));
-	// 			drawLegR(VAL(R_LEG_XROT));
-
-	// 			glDisable(GL_TEXTURE_2D);
-
-	// 			drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), lod);
-	// 		}
-
-	// 	glPopMatrix();
-
-	// glPopMatrix();
-
-	int init = 0;
-
-    num_point = 9;
-
-	double outer = 1, scale = 1.2;
-
-	ctrl = new Point[num_point];
-	ctrl[0] = Point(+0.0 * outer, +0.0 * outer * scale, +0.0);
-	ctrl[1] = Point(-1.0 * outer, +0.0 * outer * scale, +0.0);
-	ctrl[2] = Point(-1.0 * outer, +1.0 * outer * scale, +0.0);
-	ctrl[3] = Point(-1.0 * outer, +2.0 * outer * scale, +0.0);
-	ctrl[4] = Point(+0.0 * outer, +2.0 * outer * scale, +0.0);
-	ctrl[5] = Point(+1.0 * outer, +2.0 * outer * scale, +0.0);
-	ctrl[6] = Point(+1.0 * outer, +1.0 * outer * scale, +0.0);
-	ctrl[7] = Point(+1.0 * outer, +0.0 * outer * scale, +0.0);
-	ctrl[8] = ctrl[0];
-
-	num_ctrl2 = 4;
-
-	ctrl2 = new Point[num_ctrl2];
-
-	ctrl2[0] = Point(+0.0 * outer * 2, +1.0 * outer * 2, +0.0);
-	ctrl2[1] = Point(+0.0 * outer * 2, +0.5 * outer * 2, +0.0);
-	ctrl2[2] = Point(+1.0 * outer * 2, +0.5 * outer * 2, +0.0);
-	ctrl2[3] = Point(+1.0 * outer * 2, +0.0 * outer * 2, +0.0);
-
-	int num_t = 101;
-
-	calpoint(ctrl, &pts, num_point, num_t);
-	calpoint(ctrl2, &path, num_ctrl2, num_t);
-
-	init = 1;
-
-	if (init)
-	{
-
-		draw_pts = new Point* [num_t];
-		for(int i = 0; i < num_t; ++i)
-		{
-			draw_pts[i] = new Point[num_t];
-			int previous, next;
-			if (i == 0)
+			if (lod > 0)
 			{
-				previous = 0;
-				next = 1;
-			}
-			else if (i == num_t)
-			{
-				previous = num_t - 1;
-				next = num_t;
-			}
-			else
-			{
-				previous = i - 1;
-				next = i + 1;
+				drawHead();
+
+				drawArmL(VAL(L_UPPER_ARM_YROT), VAL(L_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
+				drawArmR(VAL(R_UPPER_ARM_YROT), VAL(R_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
+
+				drawLegL(VAL(L_LEG_XROT));
+				drawLegR(VAL(R_LEG_XROT));
+
+				drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), lod);
 			}
 
-			double dx = path[next].x - path[previous].x, dy = path[next].y - path[previous].y, dz = path[next].z - path[previous].z;
-			double theta, theta2 = 0;
+		glPopMatrix();
+	glPopMatrix();
 
-			theta = acos(-dy/(sqrt(pow(dx, 2)+pow(dy, 2))));
-
-			if (dx < 0)
-				theta = 2*M_PI - theta;
-
-			theta = theta - M_PI/2;
-
-			//printf("%1f\n", theta*180/M_PI);
-			for(int j = 0; j < num_t; ++j)
-			{
-				double x = pts[j].x, y = pts[j].y, z = pts[j].z;
-				double x1 = x, y1 = y*cos(theta) - z*sin(theta), z1 = y*sin(theta)+ z*cos(theta);  // x axis rotate
-				double x2 = x1*cos(theta2)+ z1*sin(theta2), y2 = y1, z2 = -x1*sin(theta2)+ z1*cos(theta2);  //y axis rotate
-				//x2 = x; y2 = y; z2 = z;
-				
-				draw_pts[i][j].x = x2+path[i].z;
-				draw_pts[i][j].y = y2+path[i].y;
-				draw_pts[i][j].z = z2-path[i].x;
-			}
-		}
-	}
-
-	// for(int i = 0; i < num_point; ++i)
-	// {
-	// 	glPushMatrix();
-	// 	glTranslated(ctrl[i].x, ctrl[i].y, ctrl[i].z);
-	// 	drawSphere(0.1);
-	// 	glPopMatrix();
-	// }
-
-	// for(int i = 0; i < num_ctrl2; ++i)
-	// {
-	// 	glPushMatrix();
-	// 	glRotated(90, 0, 1, 0);
-	// 	glTranslated(ctrl2[i].x, ctrl2[i].y, ctrl2[i].z);
-	// 	drawSphere(0.1);
-	// 	glPopMatrix();
-	// }
-
-	// glBegin(GL_LINE_STRIP);
-	// for(int i = 0; i < num_t; ++i)
-	// 	glVertex3d(pts[i].x, pts[i].y, pts[i].z);
-	// glEnd();
-
-	// glPushMatrix();
-	// glRotated(90, 0, 1, 0);
-	// glBegin(GL_LINE_STRIP);
-	// for(int i = 0; i < num_t; ++i)
-	// 	glVertex3d(path[i].x, path[i].y, path[i].z);
-	// glEnd();
-	// glPopMatrix();
-
-	if (!VAL(MODE))
-	{
-		for(int i = 1; i < num_t-1; ++i)
-		{
-			glBegin(GL_LINE_STRIP);
-			for(int j = 0; j < num_t; ++j)
-				glVertex3d(draw_pts[i][j].x, draw_pts[i][j].y, draw_pts[i][j].z);
-			glEnd();
-		}
-	}
-	else
-	{
-		for(int i = 0; i < num_t-2; ++i)
-		{
-			glBegin(GL_TRIANGLE_STRIP);
-			for(int j = 0; j < num_t; ++j)
-			{
-				glVertex3d(draw_pts[i][j].x, draw_pts[i][j].y, draw_pts[i][j].z);
-				glVertex3d(draw_pts[i+1][j].x, draw_pts[i+1][j].y, draw_pts[i+1][j].z);
-			}
-			glEnd();
-		}
-	}
+	if (lod > 1)
+		drawCurve(&draw_pts, 101, VAL(BACK_YROT));
 }
 
 int main()

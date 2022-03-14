@@ -111,12 +111,6 @@ void drawTriangle( double x1, double y1, double z1,
 void setcircle(double inner, double outer);
 void calpoint(Point* ctrl, Point** pts, int num_pts, int num_t);
 
-extern Point* ctrl;	// ctrl points of circle curve
-extern Point* pts;	// actual circle curve
-extern Point* ctrl2;	// ctrl points of path curve
-extern Point* path;	// actual path curve
-extern Point** draw_pts;
-extern int num_point;
-extern int num_ctrl2;
+void drawCurve(Point*** draw_pts, int num_t, double back_y);
 
 #endif
