@@ -111,6 +111,7 @@ Camera::Camera()
 	mAzimuth = (float)M_PI;
 
 	mLookAt = Vec3f( 0, 0, 0 );
+	mModelTorso = Vec3f(0, 0, 0);
 	mCurrentMouseAction = kActionNone;
 
 	calculateViewingTransformParameters();
@@ -228,6 +229,12 @@ void Camera::calculateUpVector()
 	Vec3f a = u * cos(mTwist * M_PI / 180);
 	Vec3f b = r * sin(mTwist * M_PI / 180);
 	mUpVector = a - b;
+}
+
+void Camera::frameAll()
+{
+	setLookAt(mModelTorso);
+	setDolly(-15.0f);
 }
 
 #pragma warning(pop)

@@ -20,6 +20,7 @@ protected:
     float		mTwist; // Not implemented yet
     
     Vec3f		mLookAt;
+    Vec3f       mModelTorso;
     
     Vec3f		mPosition;
     Vec3f		mUpVector;
@@ -68,6 +69,9 @@ public:
     { mLookAt = lookAt; mDirtyTransform = true;}
     inline Vec3f getLookAt() const
     { return mLookAt; }
+
+    inline void setModelTorso(const Vec3f& pos)
+    { mModelTorso = pos; }
     
     //---[ Interactive Adjustment ]------------------------
     // these should be used from a mouse event handling routine that calls
@@ -85,6 +89,8 @@ public:
 	void lookAt(Vec3f eye, Vec3f at, Vec3f up);
 
     void calculateUpVector();
+
+    void frameAll();
 };
 
 #endif
