@@ -15,7 +15,6 @@
 #include "cmath"
 static GLfloat lightPosition0[] = { 4, 2, -4, 0 };
 static GLfloat lightDiffuse0[]  = { 1,1,1,1 };
-static int r = 4;
 
 #include <cstring>
 
@@ -143,8 +142,9 @@ void SampleModel::draw()
 	
 	glEnable( GL_LIGHT0 );
 
-	lightPosition0[0] = r * cos(VAL(LIGHT));
-	lightPosition0[2] = r * sin(VAL(LIGHT));
+	lightPosition0[0] = VAL(LIGHTX);
+	lightPosition0[1] = VAL(LIGHTY);
+	lightPosition0[2] = VAL(LIGHTZ);
 
 	glLightfv( GL_LIGHT0, GL_POSITION, lightPosition0 );
     glLightfv( GL_LIGHT0, GL_DIFFUSE, lightDiffuse0 );
@@ -345,7 +345,9 @@ int main()
 	controls[LOD] = ModelerControl("Change Level of Detail", 0, 4, 1, 4);
 	
 	// Light
-	controls[LIGHT] = ModelerControl("LIGHT", M_PI / 2, M_PI / 2 + 2 * M_PI, 0.01, M_PI / 2);
+	controls[LIGHTX] = ModelerControl("LIGHTX", -10, 10, 1, 4);
+	controls[LIGHTY] = ModelerControl("LIGHTY", -10, 10, 1, 2);
+	controls[LIGHTZ] = ModelerControl("LIGHTZ", -10, 10, 1, -4);
 
 	// L system
 	controls[DLS] = ModelerControl("Display L-system", 0, 1, 1, 0);

@@ -11,7 +11,7 @@
 enum SampleModelControls
 {
 	LOD,
-	LIGHT,
+	LIGHTX, LIGHTY, LIGHTZ,
 	DLS, DV, IA, AOI, IT,
 	XPOS, YPOS, ZPOS,
 	L_UPPER_ARM_YROT, R_UPPER_ARM_YROT,
