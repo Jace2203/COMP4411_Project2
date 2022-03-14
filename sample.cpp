@@ -23,6 +23,8 @@ static int r = 4;
 
 class Point;
 
+#include "cmath"
+
 // To make a SampleModel, we inherit off of ModelerView
 class SampleModel : public ModelerView 
 {
@@ -119,6 +121,20 @@ ModelerView* createSampleModel(int x, int y, int w, int h, char *label)
 
 Point** draw_pts = nullptr;
 
+double ani_height = -(head_size + torso_height)/3,
+	   cur_height = 0,
+	   chg_height = 0,
+	   ani_theta = acos(-ani_height)*180/M_PI,
+	   cur_theta = 0,
+	   chg_theta = 0,
+	   ani_angle  = 15,
+	   cur_angle  = ani_angle,
+	   chg_angle  = 0,
+	   ani_wave   = 45,
+	   cur_wave   = ani_wave,
+	   chg_wave   = 0,
+	   time_wave  = 3;
+
 // We are going to override (is that the right word?) the draw()
 // method of ModelerView to draw out SampleModel
 void SampleModel::draw()
@@ -196,6 +212,34 @@ void SampleModel::draw()
 	// 		strcpy(axiom, temp);
 	// 	}
 
+	if (ModelerApplication::Instance()->IsAnimating())
+	{
+		if (cur_height <= ani_height)
+			chg_height = -ani_height /15;
+		else if (cur_height >= 0)
+			chg_height = ani_height /15;
+
+		if (cur_angle >= ani_angle)
+			chg_angle = -ani_angle /15;
+		else if (cur_angle <= -ani_angle)
+			chg_angle = ani_angle /15;
+
+		if (cur_wave >= ani_wave)
+			chg_wave = -ani_wave * time_wave /15;
+		else if (cur_wave <= -ani_wave)
+			chg_wave = ani_wave * time_wave /15;
+
+		if (cur_theta >= ani_theta)
+			chg_theta = -ani_theta /15;
+		else if (cur_theta <= 0)
+			chg_theta = ani_theta /15;
+
+		cur_height += chg_height;
+		cur_angle += chg_angle;
+		cur_wave += chg_wave;
+		cur_theta += chg_theta;
+	}
+
 	// 	glScaled(VAL(DV), VAL(DV), VAL(DV));
 	// 	glRotated(VAL(IA), 0, 0, 1);
 	// 	for(int j = 0; axiom[j] != '\0'; ++j)
@@ -235,6 +279,10 @@ void SampleModel::draw()
 	glPushMatrix();
 		glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
 		int lod = int(VAL(LOD));
+		
+		if (ModelerApplication::Instance()->IsAnimating())
+			glRotated(cur_angle, 0, 1, 0);
+			
 		// Torso
 		glPushMatrix();
 			glRotated(-90.0, 1.0, 0.0, 0.0);
@@ -245,10 +293,27 @@ void SampleModel::draw()
 			{
 				drawHead();
 
-				drawArmL(VAL(L_UPPER_ARM_YROT), VAL(L_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
-				drawArmR(VAL(R_UPPER_ARM_YROT), VAL(R_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
+				double LZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : VAL(L_UPPER_ARM_ZROT),
+					   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : VAL(R_UPPER_ARM_ZROT);
 
-				if (VAL(APPLY_IK))
+				drawArmL(VAL(L_UPPER_ARM_YROT), LZ, 45.0, 0.0, lod - 1);
+				drawArmR(VAL(R_UPPER_ARM_YROT), RZ, 45.0, 0.0, lod - 1);
+
+				//glTranslated(0, 0, -cur_height);
+
+
+				if (ModelerApplication::Instance()->IsAnimating())
+				{
+					double LTX = (ModelerApplication::Instance()->IsAnimating()) ? -cur_theta : VAL(L_THIGH_XROT),
+						   RTX = (ModelerApplication::Instance()->IsAnimating()) ? -cur_theta : VAL(R_THIGH_XROT),
+						   LLX = (ModelerApplication::Instance()->IsAnimating()) ? 2*cur_theta : VAL(L_LEG_XROT),
+						   RLX = (ModelerApplication::Instance()->IsAnimating()) ? 2*cur_theta : VAL(R_LEG_XROT);
+
+					drawLegL(LTX, VAL(L_THIGH_YROT), LLX, lod - 1);
+					drawLegR(RTX, VAL(R_THIGH_YROT), RLX, lod - 1);
+
+				}
+				else if (VAL(APPLY_IK))
 				{
 					drawLegL(angles_L[0], angles_L[1], angles_L[2], lod - 1);
 					drawLegR(angles_R[0], angles_R[1], angles_R[2], lod - 1);
@@ -258,6 +323,7 @@ void SampleModel::draw()
 					drawLegL(VAL(L_THIGH_XROT), VAL(L_THIGH_YROT), VAL(L_LEG_XROT), lod - 1);
 					drawLegR(VAL(R_THIGH_XROT), VAL(R_THIGH_YROT), VAL(R_LEG_XROT), lod - 1);
 				}
+				//glTranslated(0, 0, cur_height);
 
 				drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), VAL(TURRET_NUM), lod);
 			}
