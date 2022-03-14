@@ -70,7 +70,6 @@ void drawArmL(double upper_y, double upper_z, double lower_x, double lower_z, in
                 loadTexture(BLACK);
                 drawSphere(0.1);
                 loadTexture(BLACK);
-                glEnable(GL_TEXTURE_2D);
                 drawCylinder(arm_length, 0.1, 0.09);
                 glDisable(GL_TEXTURE_2D);
             glPopMatrix();
@@ -101,7 +100,6 @@ void drawArmR(double upper_y, double upper_z, double lower_x, double lower_z, in
                 loadTexture(BLACK);
                 drawSphere(0.1);
                 loadTexture(BLACK);
-                glEnable(GL_TEXTURE_2D);
                 drawCylinder(arm_length, 0.1, 0.09);
                 glDisable(GL_TEXTURE_2D);
             glPopMatrix();
@@ -122,14 +120,12 @@ void drawLegL(double thigh_x, double thigh_y, double leg_x)
         loadTexture(LEG_TOP);
         drawCylinder(leg_length, 0.15, 0.12);
         glTranslated(0.0, 0.0, leg_length);
-        //glDisable(GL_TEXTURE_2D);
         loadTexture(LEG_DOWN);
         drawSphere(0.12);
 
         glPushMatrix();
             glRotated(leg_x, 1.0, 0.0, 0.0);
             loadTexture(LEG_DOWN);
-            glEnable(GL_TEXTURE_2D);
             drawCylinder(leg_length, 0.12, 0.11);
         glPopMatrix();        
     glPopMatrix();
@@ -149,14 +145,12 @@ void drawLegR(double thigh_x, double thigh_y, double leg_x)
         loadTexture(LEG_TOP);
         drawCylinder(leg_length, 0.15, 0.12);
         glTranslated(0.0, 0.0, leg_length);
-        //glDisable(GL_TEXTURE_2D);
         loadTexture(LEG_DOWN);
         drawSphere(0.12);
 
         glPushMatrix();
             glRotated(leg_x, 1.0, 0.0, 0.0);
             loadTexture(LEG_DOWN);
-            glEnable(GL_TEXTURE_2D);
             drawCylinder(leg_length, 0.12, 0.11);
         glPopMatrix();        
     glPopMatrix();
