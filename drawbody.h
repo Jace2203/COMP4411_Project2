@@ -6,6 +6,8 @@ const double head_size = 0.36;
 const double arm_length = 0.5;
 const double leg_length = 0.5;
 
+class MetaballContainer;
+
 enum {
     RIGHT = -1,
     LEFT = 1
@@ -17,8 +19,8 @@ void drawHead();
 
 void drawHair();
 
-void drawArmL(double upper_y, double upper_z, double lower_x, double lower_z, int lod);
-void drawArmR(double upper_y, double upper_z, double lower_x, double lower_z, int lod);
+void drawArmL(double upper_y, double upper_z, double lower_x, double lower_z, MetaballContainer* hand, int lod);
+void drawArmR(double upper_y, double upper_z, double lower_x, double lower_z, MetaballContainer* hand, int lod);
 
 void drawLegL(double thigh_x, double thigh_y, double leg_x, int lod);
 void drawLegR(double thigh_x, double thigh_y, double leg_x, int lod);

@@ -2,6 +2,7 @@
 
 #include "modelerdraw.h"
 #include "complexshape.h"
+#include "metaball.h"
 
 #include "vec.h"
 #include "bitmap.h"
@@ -27,7 +28,7 @@ void drawHead()
     glPopMatrix();
 }
 
-void drawArmL(double upper_y, double upper_z, double lower_x, double lower_z, int lod)
+void drawArmL(double upper_y, double upper_z, double lower_x, double lower_z, MetaballContainer* hand, int lod)
 {
     glPushMatrix();
 		glTranslated(-0.5, 0.0, torso_height);
@@ -44,13 +45,15 @@ void drawArmL(double upper_y, double upper_z, double lower_x, double lower_z, in
                 glRotated(-lower_x, 1.0, 0.0, 0.0);
                 drawSphere(0.1);
                 drawCylinder(arm_length, 0.1, 0.09);
+                glTranslated(-0.025, 0.0, arm_length + 0.1);
+                hand->render();
             glPopMatrix();
         }
 
 	glPopMatrix();
 }
 
-void drawArmR(double upper_y, double upper_z, double lower_x, double lower_z, int lod)
+void drawArmR(double upper_y, double upper_z, double lower_x, double lower_z, MetaballContainer* hand, int lod)
 {
 	glPushMatrix();
 		glTranslated(0.5, 0.0, torso_height);
@@ -67,6 +70,8 @@ void drawArmR(double upper_y, double upper_z, double lower_x, double lower_z, in
                 glRotated(-lower_x, 1.0, 0.0, 0.0);
                 drawSphere(0.1);
                 drawCylinder(arm_length, 0.1, 0.09);
+                glTranslated(-0.025, 0.0, arm_length + 0.1);
+                hand->render();
             glPopMatrix();
         }
 

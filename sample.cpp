@@ -36,16 +36,22 @@ class SampleModel : public ModelerView
 	Vec3d*		last_target_L;
 	Vec3d*		last_target_R;
 
+	MetaballContainer* metaball_container[2];
+
 public:
     SampleModel(int x, int y, int w, int h, char *label) 
     : ModelerView(x,y,w,h,label)
 	{
-		metaball_container = new MetaballContainer(2, 1, 0.05);
 		for (int i = 0; i < 2; i++)
-		{
-			Metaball* metaball = new Metaball(Vec3d(0, 0, 0), 1);
-			metaball_container->append(metaball);
-		}
+			metaball_container[i] = new MetaballContainer(3, 1, 0.02);
+		
+		metaball_container[0]->append(new Metaball(Vec3d(0, 0, 0), 0.2));
+		metaball_container[0]->append(new Metaball(Vec3d(0.12, 0, 0), 0.16, META_INVERSE));
+		metaball_container[0]->append(new Metaball(Vec3d(-0.2, 0, 0), 0.28, META_INVERSE));
+		
+		metaball_container[1]->append(new Metaball(Vec3d(0, 0, 0), 0.2));
+		metaball_container[1]->append(new Metaball(Vec3d(-0.12, 0, 0), 0.16, META_INVERSE));
+		metaball_container[1]->append(new Metaball(Vec3d(0.2, 0, 0), 0.28, META_INVERSE));
 		
 		limits_L = new double*[3];
 		limits_R = new double*[3];
@@ -96,6 +102,9 @@ public:
 			delete[] limits_R[i];
 		}
 
+		for (int i = 0; i < 2; i++)
+			delete[] metaball_container[i];
+
 		delete[] limits_L;
 		delete[] limits_R;
 		delete[] length;
@@ -108,7 +117,6 @@ public:
 	}
 
     virtual void draw();
-	MetaballContainer* metaball_container;
 };
 
 // We need to make a creator function, mostly because of
@@ -296,11 +304,9 @@ void SampleModel::draw()
 				double LZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : VAL(L_UPPER_ARM_ZROT),
 					   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : VAL(R_UPPER_ARM_ZROT);
 
-				drawArmL(VAL(L_UPPER_ARM_YROT), LZ, 45.0, 0.0, lod - 1);
-				drawArmR(VAL(R_UPPER_ARM_YROT), RZ, 45.0, 0.0, lod - 1);
-
 				//glTranslated(0, 0, -cur_height);
-
+				drawArmL(VAL(L_UPPER_ARM_YROT), LZ, 45.0, 0.0, metaball_container[0], lod - 1);
+				drawArmR(VAL(R_UPPER_ARM_YROT), RZ, 45.0, 0.0, metaball_container[1], lod - 1);
 
 				if (ModelerApplication::Instance()->IsAnimating())
 				{
@@ -347,7 +353,7 @@ int main()
 	// Light
 	controls[LIGHTX] = ModelerControl("LIGHTX", -10, 10, 1, 4);
 	controls[LIGHTY] = ModelerControl("LIGHTY", -10, 10, 1, 2);
-	controls[LIGHTZ] = ModelerControl("LIGHTZ", -10, 10, 1, -4);
+	controls[LIGHTZ] = ModelerControl("LIGHTZ", -10, 10, 1, 4);
 
 	// L system
 	controls[DLS] = ModelerControl("Display L-system", 0, 1, 1, 0);
