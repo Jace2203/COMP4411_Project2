@@ -3,8 +3,8 @@
 #include "modelerdraw.h"
 
 // Metaball
-Metaball::Metaball(Vec3d& center, double radius)
-: c(new Vec3d(center[0], center[1], center[2])), r(radius)
+Metaball::Metaball(Vec3d& center, double radius, int inv)
+: c(new Vec3d(center[0], center[1], center[2])), r(radius), inv(inv)
 {
 }
 
@@ -42,7 +42,7 @@ double Metaball::getValue(const Vec3d& vec) const
     double yy = (vec[1] - (*c)[1]) * (vec[1] - (*c)[1]);
     double zz = (vec[2] - (*c)[2]) * (vec[2] - (*c)[2]);
     double rr = xx + yy + zz;
-    return r * r * r * r / (rr * rr);
+    return r * r * r * r / (rr * rr) * inv;
 }
 
 double Metaball::getX() const
@@ -219,7 +219,7 @@ void MetaballContainer::render()
                         Vec3d pb = veclist[triTable[cubeindex][i + 1]];
                         Vec3d pc = veclist[triTable[cubeindex][i + 2]];
 
-                        drawTriangle(pa[0], pa[1], pa[2], pb[0], pb[1], pb[2], pc[0], pc[1], pc[2]);
+                        drawTriangle(pa[0], pa[1], pa[2], pc[0], pc[1], pc[2], pb[0], pb[1], pb[2]);
                     }
 
                     z += gridSize;

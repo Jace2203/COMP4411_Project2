@@ -18,16 +18,19 @@ public:
     SampleModel(int x, int y, int w, int h, char *label) 
     : ModelerView(x,y,w,h,label)
 	{
-		metaball_container = new MetaballContainer(2, 1, 0.05);
-		for (int i = 0; i < 2; i++)
-		{
-			Metaball* metaball = new Metaball(Vec3d(0, 0, 0), 1);
-			metaball_container->append(metaball);
-		}
+		metaball_container[0] = new MetaballContainer(3, 1, 0.02);
+		metaball_container[0]->append(new Metaball(Vec3d(0, 0, 0), 0.2));
+		metaball_container[0]->append(new Metaball(Vec3d(0.12, 0, 0), 0.16, META_INVERSE));
+		metaball_container[0]->append(new Metaball(Vec3d(-0.2, 0, 0), 0.28, META_INVERSE));
+		
+		metaball_container[1] = new MetaballContainer(3, 1, 0.02);
+		metaball_container[1]->append(new Metaball(Vec3d(0, 0, 0), 0.2));
+		metaball_container[1]->append(new Metaball(Vec3d(-0.12, 0, 0), 0.16, META_INVERSE));
+		metaball_container[1]->append(new Metaball(Vec3d(0.2, 0, 0), 0.28, META_INVERSE));
 	}
 
     virtual void draw();
-	MetaballContainer* metaball_container;
+	MetaballContainer* metaball_container[2];
 };
 
 // We need to make a creator function, mostly because of
@@ -54,17 +57,6 @@ void SampleModel::draw()
 	// drawBox(10,0.01f,10);
 	// glPopMatrix();
 
-	bool testMeta = true;
-	if (testMeta)
-	{
-		// setDiffuseColor(COLOR_BLUE);
-		// drawSphere(1);
-		setDiffuseColor(1, 1, 1);
-		(*metaball_container)[1]->setCenter(Vec3d(VAL(XPOS), 0, 0));
-		metaball_container->render();
-	}
-	else
-	{
 	glPushMatrix();
 	glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
 
@@ -79,8 +71,8 @@ void SampleModel::draw()
 			{
 				drawHead();
 
-				drawArmL(VAL(L_UPPER_ARM_YROT), VAL(L_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
-				drawArmR(VAL(R_UPPER_ARM_YROT), VAL(R_UPPER_ARM_ZROT), 45.0, 0.0, lod - 1);
+				drawArmL(VAL(L_UPPER_ARM_YROT), VAL(L_UPPER_ARM_ZROT), 45.0, 0.0, metaball_container[0], lod - 1);
+				drawArmR(VAL(R_UPPER_ARM_YROT), VAL(R_UPPER_ARM_ZROT), 45.0, 0.0, metaball_container[1], lod - 1);
 
 				drawLegL(VAL(L_LEG_XROT));
 				drawLegR(VAL(R_LEG_XROT));
@@ -91,7 +83,6 @@ void SampleModel::draw()
 		glPopMatrix();
 
 	glPopMatrix();
-	}
 }
 
 int main()
@@ -103,7 +94,7 @@ int main()
 
 	controls[LOD] = ModelerControl("Change Level of Detail", 0, 4, 1, 4);
 	// Whole body
-    controls[XPOS] = ModelerControl("X Position", -5, 5, 0.1f, 2);
+    controls[XPOS] = ModelerControl("X Position", -5, 5, 0.1f, 0);
     controls[YPOS] = ModelerControl("Y Position", 0, 5, 0.1f, 0);
     controls[ZPOS] = ModelerControl("Z Position", -5, 5, 0.1f, 0);
 

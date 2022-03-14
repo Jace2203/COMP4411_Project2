@@ -3,10 +3,15 @@
 #ifndef METABALL_H
 #define METABALL_H
 
+enum {
+    META_NORMAL = 1,
+    META_INVERSE = -1
+};
+
 class Metaball
 {
 public:
-    Metaball(Vec3d& center, double radius);
+    Metaball(Vec3d& center, double radius, int inv = META_NORMAL);
     ~Metaball();
 
     Vec3d*  getCenter() const;
@@ -21,8 +26,9 @@ public:
     double  getY() const;
     double  getZ() const;
 private:
-    Vec3d* c;
-    double r;
+    Vec3d*  c;
+    double  r;
+    int     inv;
 };
 
 class MetaballContainer
