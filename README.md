@@ -21,5 +21,5 @@
 |2B|L-system|
 |2B|mood cycling|
 |4B|metaballs|✔
-|8B|goal-oriented motion|
-|+4B|joint contraints|
+|8B|goal-oriented motion|✔
+|+4B|joint contraints|✔
