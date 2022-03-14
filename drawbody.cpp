@@ -69,7 +69,7 @@ void drawArmR(double upper_y, double upper_z, double lower_x, double lower_z, in
 	glPopMatrix();
 }
 
-void drawLegL(double thigh_x, double thigh_y, double leg_x)
+void drawLegL(double thigh_x, double thigh_y, double leg_x, int lod)
 {
     glPushMatrix();
         glTranslated(0.3, 0.0, 0.0);
@@ -80,14 +80,17 @@ void drawLegL(double thigh_x, double thigh_y, double leg_x)
         glTranslated(0.0, 0.0, leg_length);
         drawSphere(0.12);
 
-        glPushMatrix();
-            glRotated(leg_x, 1.0, 0.0, 0.0);
-            drawCylinder(leg_length, 0.12, 0.11);
-        glPopMatrix();        
+        if (lod)
+        {
+            glPushMatrix();
+                glRotated(leg_x, 1.0, 0.0, 0.0);
+                drawCylinder(leg_length, 0.12, 0.11);
+            glPopMatrix();
+        }
     glPopMatrix();
 }
 
-void drawLegR(double thigh_x, double thigh_y, double leg_x)
+void drawLegR(double thigh_x, double thigh_y, double leg_x, int lod)
 {
     glPushMatrix();
         glTranslated(-0.3, 0.0, 0.0);
@@ -98,10 +101,13 @@ void drawLegR(double thigh_x, double thigh_y, double leg_x)
         glTranslated(0.0, 0.0, leg_length);
         drawSphere(0.12);
 
-        glPushMatrix();
-            glRotated(leg_x, 1.0, 0.0, 0.0);
-            drawCylinder(leg_length, 0.12, 0.11);
-        glPopMatrix();        
+        if (lod)
+        {
+            glPushMatrix();
+                glRotated(leg_x, 1.0, 0.0, 0.0);
+                drawCylinder(leg_length, 0.12, 0.11);
+            glPopMatrix();
+        }
     glPopMatrix();
 }
 
