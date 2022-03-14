@@ -16,12 +16,10 @@
 |B|animation|
 |B|individual looking (not just red/green)|✔
 |B|frame all|✔
-|B|individual looking (not just red/green)|
-|B|frame all|✔
 |BW|up vector|✔
 |2B|new primitives for each|
 |2B|L-system|
 |2B|mood cycling|
-|4B|metaballs|
+|4B|metaballs|✔
 |8B|goal-oriented motion|
 |+4B|joint contraints|

@@ -10,14 +10,25 @@
 #include "drawbody.h"
 #include "camera.h"
 
+#include "metaball.h"
+
 // To make a SampleModel, we inherit off of ModelerView
 class SampleModel : public ModelerView 
 {
 public:
     SampleModel(int x, int y, int w, int h, char *label) 
-        : ModelerView(x,y,w,h,label) { }
+    : ModelerView(x,y,w,h,label)
+	{
+		metaball_container = new MetaballContainer(2, 1, 0.05);
+		for (int i = 0; i < 2; i++)
+		{
+			Metaball* metaball = new Metaball(Vec3d(0, 0, 0), 1);
+			metaball_container->append(metaball);
+		}
+	}
 
     virtual void draw();
+	MetaballContainer* metaball_container;
 };
 
 // We need to make a creator function, mostly because of
@@ -36,7 +47,7 @@ void SampleModel::draw()
 	// projection matrix, don't bother with this ...
     ModelerView::draw();
 
-	// // draw the floor
+	// draw the floor
 	// setAmbientColor(.1f,.1f,.1f);
 	// setDiffuseColor(COLOR_RED);
 	// glPushMatrix();
@@ -45,6 +56,9 @@ void SampleModel::draw()
 	// glPopMatrix();
 
 	m_camera->setModelTorso(Vec3f(VAL(XPOS), VAL(YPOS), VAL(ZPOS)));
+	// (*metaball_container)[1]->setCenter(Vec3d(VAL(XPOS), 0, 0));
+	// metaball_container->render();
+	
 	glPushMatrix();
 	glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
 
@@ -71,8 +85,6 @@ void SampleModel::draw()
 		glPopMatrix();
 
 	glPopMatrix();
-
-	// drawTurret();
 }
 
 int main()
@@ -86,7 +98,7 @@ int main()
 	controls[LOD] = ModelerControl("Change Level of Detail", 0, 4, 1, 4);
 
 	// Whole body
-    controls[XPOS] = ModelerControl("X Position", -5, 5, 0.1f, 0);
+    controls[XPOS] = ModelerControl("X Position", -5, 5, 0.1f, 2);
     controls[YPOS] = ModelerControl("Y Position", 0, 5, 0.1f, 0);
     controls[ZPOS] = ModelerControl("Z Position", -5, 5, 0.1f, 0);
 
