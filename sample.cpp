@@ -12,6 +12,11 @@
 #include "metaball.h"
 #include "ik.h"
 
+#include "cmath"
+static GLfloat lightPosition0[] = { 4, 2, -4, 0 };
+static GLfloat lightDiffuse0[]  = { 1,1,1,1 };
+static int r = 4;
+
 // To make a SampleModel, we inherit off of ModelerView
 class SampleModel : public ModelerView 
 {
@@ -114,6 +119,14 @@ void SampleModel::draw()
     // matrix stuff.  Unless you want to fudge directly with the 
 	// projection matrix, don't bother with this ...
     ModelerView::draw();
+	
+	glEnable( GL_LIGHT0 );
+
+	lightPosition0[0] = r * cos(VAL(LIGHT));
+	lightPosition0[2] = r * sin(VAL(LIGHT));
+
+	glLightfv( GL_LIGHT0, GL_POSITION, lightPosition0 );
+    glLightfv( GL_LIGHT0, GL_DIFFUSE, lightDiffuse0 );
 
 	if (VAL(APPLY_IK))
 	{
@@ -203,6 +216,9 @@ int main()
 
 	// LOD
 	controls[LOD] = ModelerControl("Change Level of Detail", 0, 4, 1, 4);
+	
+	// Light
+	controls[LIGHT] = ModelerControl("LIGHT", M_PI / 2, M_PI / 2 + 2 * M_PI, 0.01, M_PI / 2);
 
 	// Whole body
     controls[XPOS] = ModelerControl("X Position", -5, 5, 0.1f, 2);
