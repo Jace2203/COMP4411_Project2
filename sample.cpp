@@ -17,6 +17,8 @@ static GLfloat lightPosition0[] = { 4, 2, -4, 0 };
 static GLfloat lightDiffuse0[]  = { 1,1,1,1 };
 static int r = 4;
 
+#include <cstring>
+
 // To make a SampleModel, we inherit off of ModelerView
 class SampleModel : public ModelerView 
 {
@@ -167,13 +169,68 @@ void SampleModel::draw()
 	// drawBox(10,0.01f,10);
 	// glPopMatrix();
 
+	// if (VAL(DLS))
+	// {
+	// 	char axiom[65536*6] = "X";
+	// 	for(int i = 0; i < VAL(IT); ++i)
+	// 	{
+	// 		char temp[65536*6] = "";
+	// 		for(int j = 0; axiom[j] != '\0'; ++j)
+	// 		{
+	// 			switch (axiom[j])
+	// 			{
+	// 				case 'X':
+	// 					strcat(temp, "F[+X]F[+X]-X");
+	// 					break;
+	// 				case 'F':
+	// 					strcat(temp, "FF");
+	// 					break;
+	// 				default:
+	// 					strncat(temp, axiom+j, 1);
+	// 					break;
+	// 			}
+	// 		}
+	// 		strcpy(axiom, temp);
+	// 	}
+
+	// 	glScaled(VAL(DV), VAL(DV), VAL(DV));
+	// 	glRotated(VAL(IA), 0, 0, 1);
+	// 	for(int j = 0; axiom[j] != '\0'; ++j)
+	// 	{
+	// 		switch (axiom[j])
+	// 		{
+	// 			case 'F':
+	// 				glBegin(GL_LINE_STRIP);
+	// 					glVertex3d(0, 0, 0);
+	// 					glVertex3d(1, 0, 0);
+	// 				glEnd();
+	// 				glTranslated(1, 0, 0);
+	// 				break;
+	// 			case '[':
+	// 				glPushMatrix();
+	// 				break;
+	// 			case '-':
+	// 				glRotated(VAL(AOI), 0, 0, 1);
+	// 				break;
+	// 			case ']':
+	// 				glPopMatrix();
+	// 				break;
+	// 			case '+':
+	// 				glRotated(-VAL(AOI), 0, 0, 1);
+	// 				break;
+	// 		}
+	// 	}
+	// }
+	// else
+	// {
+	// }
+
 	m_camera->setModelTorso(Vec3f(VAL(XPOS), VAL(YPOS), VAL(ZPOS)));
 	// (*metaball_container)[1]->setCenter(Vec3d(VAL(XPOS), 0, 0));
 	// metaball_container->render();
 	
 	glPushMatrix();
-	glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
-
+		glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
 		int lod = int(VAL(LOD));
 		// Torso
 		glPushMatrix();
@@ -220,8 +277,15 @@ int main()
 	// Light
 	controls[LIGHT] = ModelerControl("LIGHT", M_PI / 2, M_PI / 2 + 2 * M_PI, 0.01, M_PI / 2);
 
+	// L system
+	controls[DLS] = ModelerControl("Display L-system", 0, 1, 1, 0);
+	controls[DV] = ModelerControl("D-value", 0, 1, 0.01, 0.1);
+	controls[IA] = ModelerControl("Initial Angle", 0, 360, 1, 90);
+	controls[AOI] = ModelerControl("Angle of Increment", 0, 360, 1, 30);
+	controls[IT] = ModelerControl("Iteration", 0, 6, 1, 4);
+
 	// Whole body
-    controls[XPOS] = ModelerControl("X Position", -5, 5, 0.1f, 2);
+    controls[XPOS] = ModelerControl("X Position", -5, 5, 0.1f, 0);
     controls[YPOS] = ModelerControl("Y Position", 0, 5, 0.1f, 0);
     controls[ZPOS] = ModelerControl("Z Position", -5, 5, 0.1f, 0);
 
