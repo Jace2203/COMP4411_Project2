@@ -121,6 +121,7 @@ ModelerView* createSampleModel(int x, int y, int w, int h, char *label)
 }
 
 Point** draw_pts = nullptr;
+Point** torus = nullptr;
 
 double ani_height = -(head_size + torso_height)/3,
 	   cur_height = 0,
@@ -243,6 +244,9 @@ void SampleModel::draw()
 				double LZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : VAL(L_UPPER_ARM_ZROT),
 					   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : VAL(R_UPPER_ARM_ZROT);
 
+				if (VAL(SHOW_TORUS))
+					drawtorus(&torus, 101, VAL(R_UPPER_ARM_YROT));
+
 				drawArmL(VAL(L_UPPER_ARM_YROT), LZ, 45.0, 0.0, metaball_container[0], lod - 1);
 				drawArmR(VAL(R_UPPER_ARM_YROT), RZ, 45.0, 0.0, metaball_container[1], lod - 1);
 
@@ -343,6 +347,8 @@ int main()
 	controls[R_TARGET_Y] = ModelerControl("Right Leg Target Y", 0, 0.5, 0.01f, 0);
 	controls[L_TARGET_Z] = ModelerControl("Left Leg Target Z", -0.5, 0, 0.01f, 0);
 	controls[R_TARGET_Z] = ModelerControl("Right Leg Target Z", -0.5, 0, 0.01f, 0);
+
+	controls[SHOW_TORUS] = ModelerControl("Show Torus", 0, 1, 1, 0);
 
 	controls[APPLY_IK] = ModelerControl("Apply IK", 0, 1, 1, 0);
 
