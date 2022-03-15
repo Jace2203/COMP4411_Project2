@@ -294,6 +294,7 @@ void SampleModel::draw()
 		// Torso
 		glPushMatrix();
 			glRotated(-90.0, 1.0, 0.0, 0.0);
+			glTranslated(0, 0, cur_height);
 
 			drawTorso();
 
@@ -304,7 +305,6 @@ void SampleModel::draw()
 				double LZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : VAL(L_UPPER_ARM_ZROT),
 					   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : VAL(R_UPPER_ARM_ZROT);
 
-				//glTranslated(0, 0, -cur_height);
 				drawArmL(VAL(L_UPPER_ARM_YROT), LZ, 45.0, 0.0, metaball_container[0], lod - 1);
 				drawArmR(VAL(R_UPPER_ARM_YROT), RZ, 45.0, 0.0, metaball_container[1], lod - 1);
 
@@ -317,7 +317,6 @@ void SampleModel::draw()
 
 					drawLegL(LTX, VAL(L_THIGH_YROT), LLX, lod - 1);
 					drawLegR(RTX, VAL(R_THIGH_YROT), RLX, lod - 1);
-
 				}
 				else if (VAL(APPLY_IK))
 				{
@@ -329,15 +328,15 @@ void SampleModel::draw()
 					drawLegL(VAL(L_THIGH_XROT), VAL(L_THIGH_YROT), VAL(L_LEG_XROT), lod - 1);
 					drawLegR(VAL(R_THIGH_XROT), VAL(R_THIGH_YROT), VAL(R_LEG_XROT), lod - 1);
 				}
-				//glTranslated(0, 0, cur_height);
 
 				drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), VAL(TURRET_NUM), lod);
 			}
 
+			if (lod > 1)
+				drawCurve(&draw_pts, 101, VAL(BACK_YROT));
+
 		glPopMatrix();
 	glPopMatrix();
-
-	drawCurve(&draw_pts, 101, VAL(BACK_YROT));
 }
 
 int main()
@@ -408,6 +407,7 @@ int main()
 	// Curve Mode
 	controls[MODE] = ModelerControl("Mode", 0, 1, 1, 0);
 
+	init
     ModelerApplication::Instance()->Init(&createSampleModel, controls, NUMCONTROLS);
     return ModelerApplication::Instance()->Run();
 }
