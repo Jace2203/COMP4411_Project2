@@ -16,13 +16,7 @@
 static GLfloat lightPosition0[] = { 4, 2, -4, 0 };
 static GLfloat lightDiffuse0[]  = { 1,1,1,1 };
 
-#include <cstring>
-
-#include <cmath>
-
 class Point;
-
-#include "cmath"
 
 // To make a SampleModel, we inherit off of ModelerView
 class SampleModel : public ModelerView 
@@ -196,30 +190,6 @@ void SampleModel::draw()
 	// drawBox(10,0.01f,10);
 	// glPopMatrix();
 
-	// if (VAL(DLS))4
-	// {
-	// 	char axiom[65536*6] = "X";
-	// 	for(int i = 0; i < VAL(IT); ++i)
-	// 	{
-	// 		char temp[65536*6] = "";
-	// 		for(int j = 0; axiom[j] != '\0'; ++j)
-	// 		{
-	// 			switch (axiom[j])
-	// 			{
-	// 				case 'X':
-	// 					strcat(temp, "F[+X]F[+X]-X");
-	// 					break;
-	// 				case 'F':
-	// 					strcat(temp, "FF");
-	// 					break;
-	// 				default:
-	// 					strncat(temp, axiom+j, 1);
-	// 					break;
-	// 			}
-	// 		}
-	// 		strcpy(axiom, temp);
-	// 	}
-
 	if (ModelerApplication::Instance()->IsAnimating())
 	{
 		if (cur_height <= ani_height)
@@ -247,38 +217,6 @@ void SampleModel::draw()
 		cur_wave += chg_wave;
 		cur_theta += chg_theta;
 	}
-
-	// 	glScaled(VAL(DV), VAL(DV), VAL(DV));
-	// 	glRotated(VAL(IA), 0, 0, 1);
-	// 	for(int j = 0; axiom[j] != '\0'; ++j)
-	// 	{
-	// 		switch (axiom[j])
-	// 		{
-	// 			case 'F':
-	// 				glBegin(GL_LINE_STRIP);
-	// 					glVertex3d(0, 0, 0);
-	// 					glVertex3d(1, 0, 0);
-	// 				glEnd();
-	// 				glTranslated(1, 0, 0);
-	// 				break;
-	// 			case '[':
-	// 				glPushMatrix();
-	// 				break;
-	// 			case '-':
-	// 				glRotated(VAL(AOI), 0, 0, 1);
-	// 				break;
-	// 			case ']':
-	// 				glPopMatrix();
-	// 				break;
-	// 			case '+':
-	// 				glRotated(-VAL(AOI), 0, 0, 1);
-	// 				break;
-	// 		}
-	// 	}
-	// }
-	// else
-	// {
-	// }
 
 	m_camera->setModelTorso(Vec3f(VAL(XPOS), VAL(YPOS), VAL(ZPOS)));
 	// (*metaball_container)[1]->setCenter(Vec3d(VAL(XPOS), 0, 0));
@@ -333,7 +271,11 @@ void SampleModel::draw()
 			}
 
 			if (lod > 1)
+			{
 				drawCurve(&draw_pts, 101, VAL(BACK_YROT));
+				if (VAL(DLS))
+					drawLsystem(VAL(IT), VAL(DV), VAL(IA), VAL(AOI), VAL(BACK_YROT));
+			}
 
 		glPopMatrix();
 	glPopMatrix();
@@ -407,7 +349,8 @@ int main()
 	// Curve Mode
 	controls[MODE] = ModelerControl("Mode", 0, 1, 1, 0);
 
-	init
+	initTexture();
+
     ModelerApplication::Instance()->Init(&createSampleModel, controls, NUMCONTROLS);
     return ModelerApplication::Instance()->Run();
 }

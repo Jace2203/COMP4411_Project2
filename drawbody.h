@@ -13,6 +13,26 @@ enum {
     LEFT = 1
 };
 
+enum {
+    BLACK, PINK,
+    LEG_TOP, LEG_DOWN,
+    BODY,
+    HAND_LEFT, HAND_RIGHT,
+    NUM
+};
+
+class bmp
+{
+public:
+    int width;
+    int height;
+
+    unsigned char* data;
+
+    bmp();
+    bmp(char* in);
+};
+
 void drawTorso();
 
 void drawHead();
@@ -31,5 +51,10 @@ void drawEquipmentR(double equip_y, double turret_y, double turret_x, int turret
 
 void drawCompleteTurret(double turret_y, double turret_x, int turret_num, int lod);
 void drawTurrets(int dir, double turret_y, double turret_x, int turret_num, int lod);
+
+void initTexture();
+void loadTexture(int index);
+
+void drawLsystem(double IT, double DV, double IA, double AOI, double BY);
 
 #endif

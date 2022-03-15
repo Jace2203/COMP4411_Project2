@@ -6,17 +6,40 @@
 
 #include "vec.h"
 #include "bitmap.h"
+#include <cstring>
 
+bmp::bmp():width(0), height(0), data(nullptr) {}
+
+bmp::bmp(char* in)
+{
+    data = readBMP(in, width, height);
+}
+
+bmp* BMP = new bmp[NUM];
 
 void drawTorso()
 {
 	glPushMatrix();
 		glScaled(1.0, 0.8, 1.0);
+        loadTexture(BODY);
+        glEnable(GL_TEXTURE_2D);
 		drawCylinder(torso_height, 0.5, 0.4);
         glTranslated(0.0, 0.0, torso_height);
         glScaled(1.0, 1.0, 0.5);
+        loadTexture(BODY);
         drawSphere(0.4);
+        glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
+
+    glPushMatrix();
+        glTranslated(0.175, -0.25, 1.05);
+        drawSphere(0.2);
+    glPopMatrix();
+
+    glPushMatrix();
+        glTranslated(-0.175, -0.25, 1.05);
+        drawSphere(0.2);
+    glPopMatrix();
 }
 
 void drawHead()
@@ -35,7 +58,10 @@ void drawArmL(double upper_y, double upper_z, double lower_x, double lower_z, Me
 		glRotated(180.0, 1.0, 0.0, 0.0);
 		glRotated(-upper_y, 0.0, 1.0, 0.0);
 		glRotated(upper_z, 0.0, 0.0, 1.0);
+        loadTexture(BLACK);
+        glEnable(GL_TEXTURE_2D);
         drawSphere(0.11);
+        loadTexture(HAND_LEFT);
 		drawCylinder(arm_length, 0.11, 0.1);
 		
         if (lod > 1)
@@ -43,10 +69,15 @@ void drawArmL(double upper_y, double upper_z, double lower_x, double lower_z, Me
             glPushMatrix();
                 glTranslated(0.0, 0.0, arm_length);
                 glRotated(-lower_x, 1.0, 0.0, 0.0);
+                loadTexture(BLACK);
                 drawSphere(0.1);
+                loadTexture(BLACK);
                 drawCylinder(arm_length, 0.1, 0.09);
                 glTranslated(-0.025, 0.0, arm_length + 0.1);
+                glDisable(GL_TEXTURE_2D);
+                setDiffuseColor(230/255, 208/255, 195/255);
                 hand->render();
+                setDiffuseColor(1, 1, 1);
             glPopMatrix();
         }
 
@@ -60,7 +91,10 @@ void drawArmR(double upper_y, double upper_z, double lower_x, double lower_z, Me
 		glRotated(180.0, 1.0, 0.0, 0.0);
 		glRotated(upper_y, 0.0, 1.0, 0.0);
 		glRotated(upper_z, 0.0, 0.0, 1.0);
+        loadTexture(BLACK);
+        glEnable(GL_TEXTURE_2D);
         drawSphere(0.11);
+        loadTexture(HAND_RIGHT);
 		drawCylinder(arm_length, 0.11, 0.1);
 
         if (lod > 1)
@@ -68,10 +102,15 @@ void drawArmR(double upper_y, double upper_z, double lower_x, double lower_z, Me
             glPushMatrix();
                 glTranslated(0.0, 0.0, arm_length);
                 glRotated(-lower_x, 1.0, 0.0, 0.0);
+                loadTexture(BLACK);
                 drawSphere(0.1);
+                loadTexture(BLACK);
                 drawCylinder(arm_length, 0.1, 0.09);
                 glTranslated(-0.025, 0.0, arm_length + 0.1);
+                glDisable(GL_TEXTURE_2D);
+                setDiffuseColor(230/366, 208/255, 195/255);
                 hand->render();
+                setDiffuseColor(1, 1, 1);
             glPopMatrix();
         }
 
@@ -84,19 +123,27 @@ void drawLegL(double thigh_x, double thigh_y, double leg_x, int lod)
         glTranslated(0.3, 0.0, 0.0);
         glRotated(thigh_y, 0.0, 0.0, 1.0);
         glRotated(180.0 + thigh_x, 1.0, 0.0, 0.0);
+        glEnable(GL_TEXTURE_2D);
+        loadTexture(PINK);
         drawSphere(0.15);
+        loadTexture(LEG_TOP);
         drawCylinder(leg_length, 0.15, 0.12);
         glTranslated(0.0, 0.0, leg_length);
+        loadTexture(LEG_DOWN);
         drawSphere(0.12);
 
         if (lod)
         {
             glPushMatrix();
                 glRotated(leg_x, 1.0, 0.0, 0.0);
+                loadTexture(LEG_DOWN);
                 drawCylinder(leg_length, 0.12, 0.11);
             glPopMatrix();
         }
+
     glPopMatrix();
+
+    glDisable(GL_TEXTURE_2D);
 }
 
 void drawLegR(double thigh_x, double thigh_y, double leg_x, int lod)
@@ -105,19 +152,27 @@ void drawLegR(double thigh_x, double thigh_y, double leg_x, int lod)
         glTranslated(-0.3, 0.0, 0.0);
         glRotated(thigh_y, 0.0, 0.0, -1.0);
         glRotated(180.0 + thigh_x, 1.0, 0.0, 0.0);
+        glEnable(GL_TEXTURE_2D);
+        loadTexture(PINK);
         drawSphere(0.15);
+        loadTexture(LEG_TOP);
         drawCylinder(leg_length, 0.15, 0.12);
         glTranslated(0.0, 0.0, leg_length);
+        loadTexture(LEG_DOWN);
         drawSphere(0.12);
 
         if (lod)
         {
             glPushMatrix();
                 glRotated(leg_x, 1.0, 0.0, 0.0);
+                loadTexture(LEG_DOWN);
                 drawCylinder(leg_length, 0.12, 0.11);
-            glPopMatrix();
+            glPopMatrix(); 
         }
+
     glPopMatrix();
+
+    glDisable(GL_TEXTURE_2D);
 }
 
 void drawEquipment(double back_y, double l_equip_y, double r_equip_y, double l_turret_y, double r_turret_y, double l_turret_x, double r_turret_x, int turret_num, int lod)
@@ -336,5 +391,91 @@ void drawHair()
             glEnd();
         }
 
+    glPopMatrix();
+}
+
+void initTexture()
+{
+    char image[][30] = {
+        "black.bmp",
+        "pink.bmp",
+        "leg_top.bmp",
+        "leg_down.bmp",
+        "body2.bmp",
+        "hand_left.bmp",
+        "hand_right.bmp"
+    };
+
+    for(int i = 0; i < NUM; ++i)
+        BMP[i] = bmp(image[i]);
+}
+
+void loadTexture(int index)
+{
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, BMP[index].width, BMP[index].height, 0, GL_RGB, GL_UNSIGNED_BYTE, BMP[index].data );
+}
+
+void drawLsystem(double IT, double DV, double IA, double AOI, double BY)
+{
+    char axiom[65536*6] = "X";
+    for(int i = 0; i < IT; ++i)
+    {
+        char temp[65536*6] = "";
+        for(int j = 0; axiom[j] != '\0'; ++j)
+        {
+            switch (axiom[j])
+            {
+                case 'X':
+                    strcat(temp, "F[+X]F[+X]-X");
+                    break;
+                case 'F':
+                    strcat(temp, "FF");
+                    break;
+                default:
+                    strncat(temp, axiom+j, 1);
+                    break;
+            }
+        }
+        strcpy(axiom, temp);
+    }
+
+    glPushMatrix();
+    glRotated(-BY, 0, 1, 0);
+    glTranslated(0, 1.55, 1.30);
+    glRotated(45, 1, 0, 0);
+
+    glScaled(DV, DV, DV);
+    glRotated(IA, 0, 0, 1);
+    for(int j = 0; axiom[j] != '\0'; ++j)
+    {
+        switch (axiom[j])
+        {
+            case 'F':
+                glBegin(GL_LINE_STRIP);
+                    glVertex3d(0, 0, 0);
+                    glVertex3d(1, 0, 0);
+                glEnd();
+                glTranslated(1, 0, 0);
+                break;
+            case '[':
+                glPushMatrix();
+                break;
+            case '-':
+                glRotated(AOI, 0, 0, 1);
+                break;
+            case ']':
+                glPopMatrix();
+                break;
+            case '+':
+                glRotated(-AOI, 0, 0, 1);
+                break;
+        }
+    }
     glPopMatrix();
 }

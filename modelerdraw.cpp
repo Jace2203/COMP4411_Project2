@@ -648,10 +648,11 @@ void drawCurve(Point*** draw_pts, int num_t, double back_y)
 	// else
 	// {
         glPushMatrix();
-        // glRotated(180.0+back_y, 0.0, 1.0, 0.0);
-        // glTranslated(0.0, 0.8, 1.65);
+        glRotated(90, 1.0, 0.0, 0.0);
+        glRotated(180, 0.0, 1.0, 0.0);
+        //glTranslated(0.0, 0.8, 1.65);
 
-        glRotated(180.0, 0.0, 1.0, 0.0);
+        //glRotated(180.0, 0.0, 1.0, 0.0);
         glTranslated(0.0, 0.3, 0.45);
 
         glRotated(back_y, 0.0, 1.0, 0.0);
@@ -660,10 +661,16 @@ void drawCurve(Point*** draw_pts, int num_t, double back_y)
 		for(int i = 0; i < num_t-2; ++i)
 		{
 			glBegin(GL_TRIANGLE_STRIP);
-			for(int j = 0; j < num_t; ++j)
+			for(int j = 0; j < num_t-1; ++j)
 			{
-				glVertex3d((*draw_pts)[i][j].x, (*draw_pts)[i][j].y, (*draw_pts)[i][j].z);
-				glVertex3d((*draw_pts)[i+1][j].x, (*draw_pts)[i+1][j].y, (*draw_pts)[i+1][j].z);
+				//glVertex3d((*draw_pts)[i][j].x, (*draw_pts)[i][j].y, (*draw_pts)[i][j].z);
+				//glVertex3d((*draw_pts)[i+1][j].x, (*draw_pts)[i+1][j].y, (*draw_pts)[i+1][j].z);
+                drawTriangle((*draw_pts)[i + 1][j + 1].x, (*draw_pts)[i + 1][j + 1].y, (*draw_pts)[i + 1][j + 1].z,
+                    (*draw_pts)[i + 1][j].x, (*draw_pts)[i + 1][j].y, (*draw_pts)[i + 1][j].z,
+                    (*draw_pts)[i][j].x, (*draw_pts)[i][j].y, (*draw_pts)[i][j].z);
+                drawTriangle((*draw_pts)[i][j+1].x, (*draw_pts)[i][j+1].y, (*draw_pts)[i][j+1].z,
+                             (*draw_pts)[i+1][j+1].x, (*draw_pts)[i+1][j+1].y, (*draw_pts)[i+1][j+1].z,
+                             (*draw_pts)[i][j].x, (*draw_pts)[i][j].y, (*draw_pts)[i][j].z);
 			}
 			glEnd();
 		}
