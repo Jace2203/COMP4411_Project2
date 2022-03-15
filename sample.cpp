@@ -245,7 +245,7 @@ void SampleModel::draw()
 					   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : VAL(R_UPPER_ARM_ZROT);
 
 				if (VAL(SHOW_TORUS))
-					drawtorus(&torus, 101, VAL(R_UPPER_ARM_YROT));
+					drawtorus(&torus, 21, VAL(R_UPPER_ARM_YROT));
 
 				drawArmL(VAL(L_UPPER_ARM_YROT), LZ, 45.0, 0.0, metaball_container[0], lod - 1);
 				drawArmR(VAL(R_UPPER_ARM_YROT), RZ, 45.0, 0.0, metaball_container[1], lod - 1);
@@ -279,7 +279,7 @@ void SampleModel::draw()
 			if (lod > 1)
 			{
 				setDiffuseColor(113.0/255, 118.0/255, 138.0/255);
-				drawCurve(&draw_pts, 101, VAL(BACK_YROT));
+				drawCurve(&draw_pts, 21, VAL(BACK_YROT));
 				if (VAL(DLS))
 					drawLsystem(VAL(IT), VAL(DV), VAL(IA), VAL(AOI), VAL(BACK_YROT));
 				setDiffuseColor(1, 1, 1);
