@@ -135,7 +135,7 @@ double ani_height = -(head_size + torso_height)/3,
 	   ani_wave   = 45,
 	   cur_wave   = ani_wave,
 	   chg_wave   = 0,
-	   time_wave  = 3;
+	   time_wave  = 5;
 
 // We are going to override (is that the right word?) the draw()
 // method of ModelerView to draw out SampleModel
@@ -183,7 +183,7 @@ void SampleModel::draw()
 		}
 	}
 
-	// // draw the floor
+	// draw the floor
 	// setAmbientColor(.1f,.1f,.1f);
 	// setDiffuseColor(COLOR_RED);
 	// glPushMatrix();
@@ -271,14 +271,18 @@ void SampleModel::draw()
 					drawLegR(VAL(R_THIGH_XROT), VAL(R_THIGH_YROT), VAL(R_LEG_XROT), lod - 1);
 				}
 
+				setDiffuseColor(113.0/255, 118.0/255, 138.0/255);
 				drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), VAL(TURRET_NUM), lod);
+				setDiffuseColor(1, 1, 1);
 			}
 
 			if (lod > 1)
 			{
+				setDiffuseColor(113.0/255, 118.0/255, 138.0/255);
 				drawCurve(&draw_pts, 101, VAL(BACK_YROT));
 				if (VAL(DLS))
 					drawLsystem(VAL(IT), VAL(DV), VAL(IA), VAL(AOI), VAL(BACK_YROT));
+				setDiffuseColor(1, 1, 1);
 			}
 
 		glPopMatrix();

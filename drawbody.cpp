@@ -75,7 +75,7 @@ void drawArmL(double upper_y, double upper_z, double lower_x, double lower_z, Me
                 drawCylinder(arm_length, 0.1, 0.09);
                 glTranslated(-0.025, 0.0, arm_length + 0.1);
                 glDisable(GL_TEXTURE_2D);
-                setDiffuseColor(230/255, 208/255, 195/255);
+                setDiffuseColor(230.0/255, 208.0/255, 195.0/255);
                 hand->render();
                 setDiffuseColor(1, 1, 1);
             glPopMatrix();
@@ -108,7 +108,7 @@ void drawArmR(double upper_y, double upper_z, double lower_x, double lower_z, Me
                 drawCylinder(arm_length, 0.1, 0.09);
                 glTranslated(-0.025, 0.0, arm_length + 0.1);
                 glDisable(GL_TEXTURE_2D);
-                setDiffuseColor(230/366, 208/255, 195/255);
+                setDiffuseColor(230.0/255, 208.0/255, 195.0/255);
                 hand->render();
                 setDiffuseColor(1, 1, 1);
             glPopMatrix();
