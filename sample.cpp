@@ -341,8 +341,8 @@ int main()
 	controls[R_UPPER_ARM_YROT] = ModelerControl("Right Upper Arm Y Rotation", 10, 135, 0.1f, 10);
 	controls[R_UPPER_ARM_ZROT] = ModelerControl("Right Upper Arm Z Rotation", -45, 45, 0.1f, 0);
 
-	controls[L_LOWER_ARM_XROT] = ModelerControl("Left Lower Arm X Rotation", 10, 135, 0.1f, 10);
-	controls[R_LOWER_ARM_XROT] = ModelerControl("Right Lower Arm X Rotation", 10, 135, 0.1f, 10);
+	controls[L_LOWER_ARM_XROT] = ModelerControl("Left Lower Arm X Rotation", 10, 135, 0.1f, 45);
+	controls[R_LOWER_ARM_XROT] = ModelerControl("Right Lower Arm X Rotation", 10, 135, 0.1f, 45);
 
 	// Leg
 	controls[L_THIGH_XROT] = ModelerControl("Left Thigh X Rotation", -60, 50, 0.1f, -5);
