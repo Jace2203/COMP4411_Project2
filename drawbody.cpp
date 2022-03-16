@@ -31,15 +31,15 @@ void drawTorso()
         glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 
-    glPushMatrix();
-        glTranslated(0.175, -0.25, 1.05);
-        drawSphere(0.2);
-    glPopMatrix();
+    // glPushMatrix();
+    //     glTranslated(0.175, -0.25, 1.05);
+    //     drawSphere(0.2);
+    // glPopMatrix();
 
-    glPushMatrix();
-        glTranslated(-0.175, -0.25, 1.05);
-        drawSphere(0.2);
-    glPopMatrix();
+    // glPushMatrix();
+    //     glTranslated(-0.175, -0.25, 1.05);
+    //     drawSphere(0.2);
+    // glPopMatrix();
 }
 
 void drawHead()
@@ -53,11 +53,12 @@ void drawHead()
     glPopMatrix();
 }
 
-void drawArmL(double upper_y, double upper_z, double lower_x, double lower_z, MetaballContainer* hand, int lod)
+void drawArmL(double upper_y, double upper_z, double lower_x, double upper_x, MetaballContainer* hand, int lod)
 {
     glPushMatrix();
 		glTranslated(-0.5, 0.0, torso_height);
 		glRotated(180.0, 1.0, 0.0, 0.0);
+        glRotated(-upper_x, 1.0, 0.0, 0.0);
 		glRotated(-upper_y, 0.0, 1.0, 0.0);
 		glRotated(upper_z, 0.0, 0.0, 1.0);
         loadTexture(BLACK);
@@ -86,11 +87,12 @@ void drawArmL(double upper_y, double upper_z, double lower_x, double lower_z, Me
 	glPopMatrix();
 }
 
-void drawArmR(double upper_y, double upper_z, double lower_x, double lower_z, MetaballContainer* hand, int lod)
+void drawArmR(double upper_y, double upper_z, double lower_x, double upper_x, MetaballContainer* hand, int lod)
 {
 	glPushMatrix();
 		glTranslated(0.5, 0.0, torso_height);
 		glRotated(180.0, 1.0, 0.0, 0.0);
+        glRotated(-upper_x, 1.0, 0.0, 0.0);
 		glRotated(upper_y, 0.0, 1.0, 0.0);
 		glRotated(upper_z, 0.0, 0.0, 1.0);
         loadTexture(BLACK);

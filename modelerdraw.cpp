@@ -584,7 +584,7 @@ void drawtorus(Point*** draw_pts, int num_t, double theta)
 	// else
 	// {
         glPushMatrix();
-        glTranslated(0.55, -0.1, 1.2);
+        glTranslated(0.50, -0.1, 1.2);
         glRotated(90, 0.0, 1.0, 0.0);
 
         glRotated(-theta, 0.0, 1.0, 0.0);

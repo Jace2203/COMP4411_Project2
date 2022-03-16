@@ -123,10 +123,10 @@ ModelerView* createSampleModel(int x, int y, int w, int h, char *label)
 Point** draw_pts = nullptr;
 Point** torus = nullptr;
 
-double ani_height = -(head_size + torso_height)/3,
+double ani_height = -(head_size + torso_height)/5,
 	   cur_height = 0,
 	   chg_height = 0,
-	   ani_theta = acos(-ani_height)*180/M_PI,
+	   ani_theta = acos(1+ani_height)*180/M_PI,
 	   cur_theta = 0,
 	   chg_theta = 0,
 	   ani_angle  = 15,
@@ -183,35 +183,41 @@ void SampleModel::draw()
 		}
 	}
 
-	// draw the floor
+	//draw the floor
 	// setAmbientColor(.1f,.1f,.1f);
 	// setDiffuseColor(COLOR_RED);
 	// glPushMatrix();
-	// glTranslated(-5,0,-5);
+	// glTranslated(-5,-1,-5);
 	// drawBox(10,0.01f,10);
 	// glPopMatrix();
 
 	if (ModelerApplication::Instance()->IsAnimating())
 	{
 		if (cur_height <= ani_height)
+		{
 			chg_height = -ani_height /15;
+			chg_theta = -ani_theta /15;
+		}
 		else if (cur_height >= 0)
+		{
 			chg_height = ani_height /15;
+			chg_theta = ani_theta /15;
 
-		if (cur_angle >= ani_angle)
-			chg_angle = -ani_angle /15;
-		else if (cur_angle <= -ani_angle)
-			chg_angle = ani_angle /15;
+			if (chg_angle >= 0)
+				chg_angle = -ani_angle /15;
+			else
+				chg_angle = ani_angle /15;
+		}
+
+		// if (cur_height >= 0 && chg_angle >= 0)
+		// 	chg_angle = -ani_angle /15;
+		// else if (cur_height >= 0 && chg_angle <= 0)
+		// 	chg_angle = ani_angle /15;
 
 		if (cur_wave >= ani_wave)
 			chg_wave = -ani_wave * time_wave /15;
 		else if (cur_wave <= -ani_wave)
 			chg_wave = ani_wave * time_wave /15;
-
-		if (cur_theta >= ani_theta)
-			chg_theta = -ani_theta /15;
-		else if (cur_theta <= 0)
-			chg_theta = ani_theta /15;
 
 		cur_height += chg_height;
 		cur_angle += chg_angle;
@@ -241,21 +247,27 @@ void SampleModel::draw()
 			{
 				drawHead();
 
-				double LZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : VAL(L_UPPER_ARM_ZROT),
-					   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : VAL(R_UPPER_ARM_ZROT);
+				double LZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ?  45.0: (VAL(MOOD) == 2) ? -45.0: VAL(L_UPPER_ARM_ZROT),
+					   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ? -45.0: (VAL(MOOD) == 2) ?  45.0: VAL(R_UPPER_ARM_ZROT),
+					   LY = (VAL(MOOD) == 1) ? 135.0: (VAL(MOOD) == 2) ? 50: VAL(L_UPPER_ARM_YROT),
+					   RY = (VAL(MOOD) == 1) ? 135.0: (VAL(MOOD) == 2) ? 50: VAL(R_UPPER_ARM_YROT),
+					   LUX = (VAL(MOOD) == 2) ? -22.5: VAL(L_UPPER_ARM_XROT),
+					   RUX = (VAL(MOOD) == 2) ? -22.5: VAL(R_UPPER_ARM_XROT),
+					   LLAX = (VAL(MOOD) == 2) ? 95.0: VAL(L_LOWER_ARM_XROT),
+					   RLAX = (VAL(MOOD) == 2) ? 95.0: VAL(R_LOWER_ARM_XROT);
 
 				if (VAL(SHOW_TORUS))
-					drawtorus(&torus, 21, VAL(R_UPPER_ARM_YROT));
+					drawtorus(&torus, 21, RY);
 
-				drawArmL(VAL(L_UPPER_ARM_YROT), LZ, 45.0, 0.0, metaball_container[0], lod - 1);
-				drawArmR(VAL(R_UPPER_ARM_YROT), RZ, 45.0, 0.0, metaball_container[1], lod - 1);
+				drawArmL(LY, LZ, LLAX, LUX, metaball_container[0], lod - 1);
+				drawArmR(RY, RZ, RLAX, RUX, metaball_container[1], lod - 1);
 
 				if (ModelerApplication::Instance()->IsAnimating())
 				{
-					double LTX = (ModelerApplication::Instance()->IsAnimating()) ? -cur_theta : VAL(L_THIGH_XROT),
-						   RTX = (ModelerApplication::Instance()->IsAnimating()) ? -cur_theta : VAL(R_THIGH_XROT),
-						   LLX = (ModelerApplication::Instance()->IsAnimating()) ? 2*cur_theta : VAL(L_LEG_XROT),
-						   RLX = (ModelerApplication::Instance()->IsAnimating()) ? 2*cur_theta : VAL(R_LEG_XROT);
+					double LTX = -cur_theta,
+						   RTX = -cur_theta,
+						   LLX = 2*cur_theta, 
+						   RLX = 2*cur_theta;
 
 					drawLegL(LTX, VAL(L_THIGH_YROT), LLX, lod - 1);
 					drawLegR(RTX, VAL(R_THIGH_YROT), RLX, lod - 1);
@@ -267,8 +279,13 @@ void SampleModel::draw()
 				}
 				else
 				{
-					drawLegL(VAL(L_THIGH_XROT), VAL(L_THIGH_YROT), VAL(L_LEG_XROT), lod - 1);
-					drawLegR(VAL(R_THIGH_XROT), VAL(R_THIGH_YROT), VAL(R_LEG_XROT), lod - 1);
+					double LTX = (VAL(MOOD) == 1) ? 25.0: VAL(L_THIGH_XROT),
+						   RTX = (VAL(MOOD) == 1) ? 25.0: VAL(R_THIGH_XROT),
+						   LLX = (VAL(MOOD) == 1) ? 75.0: VAL(L_LEG_XROT),
+						   RLX = (VAL(MOOD) == 1) ? 75.0: VAL(R_LEG_XROT);
+
+					drawLegL(LTX, VAL(L_THIGH_YROT), LLX, lod - 1);
+					drawLegR(RTX, VAL(R_THIGH_YROT), RLX, lod - 1);
 				}
 
 				setDiffuseColor(113.0/255, 118.0/255, 138.0/255);
@@ -317,10 +334,15 @@ int main()
     controls[ZPOS] = ModelerControl("Z Position", -5, 5, 0.1f, 0);
 
 	// Arm
+	controls[L_UPPER_ARM_XROT] = ModelerControl("Left Upper Arm X Rotation", -45, 180, 0.1f, 0);
 	controls[L_UPPER_ARM_YROT] = ModelerControl("Left Upper Arm Y Rotation", 10, 135, 0.1f, 10);
 	controls[L_UPPER_ARM_ZROT] = ModelerControl("Left Upper Arm Z Rotation", -45, 45, 0.1f, 0);
+	controls[R_UPPER_ARM_XROT] = ModelerControl("Right Upper Arm X Rotation", -45, 180, 0.1f, 0);
 	controls[R_UPPER_ARM_YROT] = ModelerControl("Right Upper Arm Y Rotation", 10, 135, 0.1f, 10);
 	controls[R_UPPER_ARM_ZROT] = ModelerControl("Right Upper Arm Z Rotation", -45, 45, 0.1f, 0);
+
+	controls[L_LOWER_ARM_XROT] = ModelerControl("Left Lower Arm X Rotation", 10, 135, 0.1f, 10);
+	controls[R_LOWER_ARM_XROT] = ModelerControl("Right Lower Arm X Rotation", 10, 135, 0.1f, 10);
 
 	// Leg
 	controls[L_THIGH_XROT] = ModelerControl("Left Thigh X Rotation", -60, 50, 0.1f, -5);
@@ -353,6 +375,8 @@ int main()
 	controls[R_TARGET_Z] = ModelerControl("Right Leg Target Z", -0.5, 0, 0.01f, 0);
 
 	controls[SHOW_TORUS] = ModelerControl("Show Torus", 0, 1, 1, 0);
+
+	controls[MOOD] = ModelerControl("Mood", 0, 2, 1, 0);
 
 	controls[APPLY_IK] = ModelerControl("Apply IK", 0, 1, 1, 0);
 
