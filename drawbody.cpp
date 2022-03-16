@@ -47,7 +47,9 @@ void drawHead()
     glPushMatrix();
         glRotated(90.0, 1.0, 0.0, 0.0);
         glTranslated(0.0, head_size + torso_height + 0.2, 0.0);
+        setDiffuseColor(230.0/255, 208.0/255, 195.0/255);
         drawSphere(head_size);
+        setDiffuseColor(1, 1, 1);
     glPopMatrix();
 }
 
