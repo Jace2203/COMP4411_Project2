@@ -58,7 +58,7 @@ Surface::~Surface()
         if (draw_pts[i]) delete[] draw_pts[i];
 }
 
-Surface::void draw(int mode)
+void Surface::draw(int mode)
 {
 	if (mode)
 	{

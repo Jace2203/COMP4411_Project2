@@ -15,5 +15,5 @@ public:
     Surface(int num_t, bcurve* surface, bcurve* path);
     ~Surface();
 
-    void draw();
+    void draw(int mode);
 }
