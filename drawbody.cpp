@@ -26,7 +26,7 @@ void drawTorso()
 		drawCylinder(torso_height, 0.5, 0.4);
         glTranslated(0.0, 0.0, torso_height);
         glScaled(1.0, 1.0, 0.5);
-        loadTexture(BODY);
+        loadTexture(BLACK);
         drawSphere(0.4);
         glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
@@ -45,11 +45,12 @@ void drawTorso()
 void drawHead()
 {
     glPushMatrix();
-        glRotated(90.0, 1.0, 0.0, 0.0);
-        glTranslated(0.0, head_size + torso_height + 0.2, 0.0);
-        setDiffuseColor(230.0/255, 208.0/255, 195.0/255);
+        glEnable(GL_TEXTURE_2D);
+        glTranslated(0.0, 0.0, head_size + torso_height + 0.2);
+        loadTexture(HEAD);
         drawSphere(head_size);
         setDiffuseColor(1, 1, 1);
+        glDisable(GL_TEXTURE_2D);
     glPopMatrix();
 }
 
@@ -401,6 +402,7 @@ void drawHair()
 void initTexture()
 {
     char image[][50] = {
+        "texture/face.bmp",
         "texture/black.bmp",
         "texture/pink.bmp",
         "texture/leg_top.bmp",

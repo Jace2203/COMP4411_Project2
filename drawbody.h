@@ -14,6 +14,7 @@ enum {
 };
 
 enum {
+    HEAD,
     BLACK, PINK,
     LEG_TOP, LEG_DOWN,
     BODY,

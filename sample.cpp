@@ -288,14 +288,14 @@ void SampleModel::draw()
 					drawLegR(RTX, VAL(R_THIGH_YROT), RLX, lod - 1);
 				}
 
-				setDiffuseColor(113.0/255, 118.0/255, 138.0/255);
+				setDiffuseColor(50.0/255, 75.0/255, 100.0/255);
 				drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), VAL(TURRET_NUM), lod);
 				setDiffuseColor(1, 1, 1);
 			}
 
 			if (lod > 1)
 			{
-				setDiffuseColor(113.0/255, 118.0/255, 138.0/255);
+				setDiffuseColor(50.0/255, 75.0/255, 100.0/255);
 				drawCurve(&draw_pts, 21, VAL(BACK_YROT));
 				if (VAL(DLS))
 					drawLsystem(VAL(IT), VAL(DV), VAL(IA), VAL(AOI), VAL(BACK_YROT));
