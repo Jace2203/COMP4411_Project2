@@ -32,6 +32,9 @@ class SampleModel : public ModelerView
 
 	MetaballContainer* metaball_container[2];
 
+	Point** draw_pts = nullptr;
+	Point** torus = nullptr;
+
 public:
     SampleModel(int x, int y, int w, int h, char *label) 
     : ModelerView(x,y,w,h,label)
@@ -86,6 +89,8 @@ public:
 		angles_R[0] = VAL(R_THIGH_XROT);
 		angles_R[1] = VAL(R_THIGH_YROT);
 		angles_R[2] = VAL(R_LEG_XROT);
+
+
 	}
 
 	~SampleModel()
@@ -108,6 +113,14 @@ public:
 
 		delete last_target_L;
 		delete last_target_R;
+
+		deleteTexture();
+
+		for(int i = 0; i < 21; ++i)
+		{
+			if (draw_pts[i]) delete[] draw_pts[i];
+			if (torus[i]) delete[] torus[i];
+		}
 	}
 
     virtual void draw();
@@ -119,10 +132,6 @@ ModelerView* createSampleModel(int x, int y, int w, int h, char *label)
 { 
     return new SampleModel(x,y,w,h,label); 
 }
-
-Point** draw_pts = nullptr;
-Point** torus = nullptr;
-Point** hair = nullptr;
 
 double ani_height = -(head_size + torso_height)/5,
 	   cur_height = 0,
@@ -233,11 +242,6 @@ void SampleModel::draw()
 	m_camera->setModelTorso(Vec3f(VAL(XPOS), VAL(YPOS), VAL(ZPOS)));
 	// (*metaball_container)[1]->setCenter(Vec3d(VAL(XPOS), 0, 0));
 	// metaball_container->render();
-
-	glPushMatrix();
-		glTranslated(3, 0, 0);
-		drawhair(&hair, 41);
-	glPopMatrix();
 	
 	glPushMatrix();
 		glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
@@ -261,13 +265,13 @@ void SampleModel::draw()
 					   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ?  45.0: (VAL(MOOD) == 2) ? -45.0: VAL(R_UPPER_ARM_ZROT),
 					   LY = (VAL(MOOD) == 1) ? 135.0: (VAL(MOOD) == 2) ? 50: VAL(L_UPPER_ARM_YROT),
 					   RY = (VAL(MOOD) == 1) ? 135.0: (VAL(MOOD) == 2) ? 50: VAL(R_UPPER_ARM_YROT),
-					   LUX = (VAL(MOOD) == 2) ? -22.5: VAL(L_UPPER_ARM_XROT),
-					   RUX = (VAL(MOOD) == 2) ? -22.5: VAL(R_UPPER_ARM_XROT),
+					   LUX = (VAL(MOOD) == 1) ? 0 : (VAL(MOOD) == 2) ? -22.5: VAL(L_UPPER_ARM_XROT),
+					   RUX = (VAL(MOOD) == 1) ? 0 : (VAL(MOOD) == 2) ? -22.5: VAL(R_UPPER_ARM_XROT),
 					   LLAX = (VAL(MOOD) == 2) ? 95.0: VAL(L_LOWER_ARM_XROT),
 					   RLAX = (VAL(MOOD) == 2) ? 95.0: VAL(R_LOWER_ARM_XROT);
 
 				if (VAL(SHOW_TORUS))
-					drawtorus(&torus, 21, RY, RUX);
+					drawtorus(&torus, 21, LY, LUX);
 
 				drawArmL(LY, LZ, LLAX, LUX, metaball_container[1], lod - 1);
 				drawArmR(RY, RZ, RLAX, RUX, metaball_container[0], lod - 1);
@@ -401,4 +405,6 @@ int main()
 
     ModelerApplication::Instance()->Init(&createSampleModel, controls, NUMCONTROLS);
     return ModelerApplication::Instance()->Run();
+
+
 }

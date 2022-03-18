@@ -55,6 +55,7 @@ void drawTurrets(int dir, double turret_y, double turret_x, int turret_num, int 
 
 void initTexture();
 void loadTexture(int index);
+void deleteTexture();
 
 void drawLsystem(double IT, double DV, double IA, double AOI, double BY);
 

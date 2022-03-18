@@ -485,3 +485,8 @@ void drawLsystem(double IT, double DV, double IA, double AOI, double BY)
     }
     glPopMatrix();
 }
+
+void deleteTexture()
+{
+    delete []BMP;
+}
