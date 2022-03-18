@@ -398,13 +398,8 @@ int main()
 
 	controls[APPLY_IK] = ModelerControl("Apply IK", 0, 1, 1, 0);
 
-	// Curve Mode
-	controls[MODE] = ModelerControl("Mode", 0, 1, 1, 0);
-
 	initTexture();
 
     ModelerApplication::Instance()->Init(&createSampleModel, controls, NUMCONTROLS);
     return ModelerApplication::Instance()->Run();
-
-
 }

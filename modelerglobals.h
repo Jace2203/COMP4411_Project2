@@ -32,7 +32,6 @@ enum SampleModelControls
 	SHOW_TORUS,
 	MOOD,
 	APPLY_IK,
-	MODE,
 	NUMCONTROLS
 };
 
