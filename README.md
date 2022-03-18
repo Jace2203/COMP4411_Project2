@@ -33,20 +33,20 @@ User can control the **level of detail** of the model using slider.
 
 ### Texture map:
 The **human body** part of the model have implemented *texture*.
-![body](texture/black.bmp)
+<img src="img/texture.png" width="200" class="center">
 
 ### Polygonal Faces (triangles):
 The **ship** and the **turret** part is drawn using *triangles*.
-![turret](texture/black.bmp)
-![ship](texture/black.bmp)
+<img src="img/turret.png" width="400" class="center">
+<img src="img/ship.png" width="600" class="center">
 
 ### Animation:
 User can enable **animation** in the menu bar.
 
 ### Individual Looking:
 User can change some part of the model, such as **turret** and **lifebuoy**.
-![3-turret](texture/black.bmp)
-![lifebuoy](texture/black.bmp)
+<img src="img/turret_3.png" width="400" class="center">
+<img src="img/lifebouy.png" width="400" class="center">
 
 ### Frame All:
 User can click **Frame All** in menu bar to position the camera to see the whole body of the model.
@@ -55,22 +55,23 @@ User can click **Frame All** in menu bar to position the camera to see the whole
 User can drag when holding `Alt + Right Click` to change the **up vector** of the camera.
 
 ### New Primitives:
-Some object is created by function drawing new types of primitive, such as **hair(curve over curver)**, **chimney(curve over curver)** and **lifebuoy(torus)**.
-![curve1](texture/black.bmp)
-![curve2](texture/black.bmp)
-![torus](texture/black.bmp)
+Some object is created by function drawing new types of primitive, such as **chimney(curve over curver)** and **lifebuoy(torus)**.
+<img src="img/chimney.png" width="400" class="center">
+<img src="img/lifebouy.png" width="400" class="center">
 
 ### L-system:
 User can turn on the *L-system* in the model using slider, which will mimic **smoke**.
-![L-system](texture/black.bmp)
+<img src="img/Lsystem.png" width="400" class="center">
 
 ### Mood Cycling:
-User can change the **mood** of the model using slider, in which the model have different poses representing different moods.
+For mood cycling, the model has two moods, namely happy and angry. When the value of mood is set to 1, it is the happy mode that the model would raise her hands and jump up. When the value of mood is set to 2, it is the angry mode that the model's arms would be akimbo and she seems angry.
+<img src="img/happy.png" width="600" class="center">
+<img src="img/angry.png" width="600" class="center">
 
 ### Metaballs:
 The hands of the model is being created by three **metaballs** each. One positive metaball and 2 negative metaballs to create the complex shape of the palm.
-![hand](texture/black.bmp)
+<img src="img/hand.png" width="400" class="center">
 
 ### Goal-Oriented Motion + Joint Contraints:
 User can control the legs of the model using **inverse kinematics**. Turn on `Apply IK` then use the leg and thigh target sliders to pose the legs.
-![IK](texture/black.bmp)
+<img src="img/IK.png" width="400" class="center">

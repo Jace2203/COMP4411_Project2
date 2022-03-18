@@ -251,8 +251,8 @@ void SampleModel::draw()
 			{
 				drawHead();
 
-				double LZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ?  45.0: (VAL(MOOD) == 2) ? -45.0: VAL(L_UPPER_ARM_ZROT),
-					   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ? -45.0: (VAL(MOOD) == 2) ?  45.0: VAL(R_UPPER_ARM_ZROT),
+				double LZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ? -45.0: (VAL(MOOD) == 2) ?  45.0: VAL(L_UPPER_ARM_ZROT),
+					   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ?  45.0: (VAL(MOOD) == 2) ? -45.0: VAL(R_UPPER_ARM_ZROT),
 					   LY = (VAL(MOOD) == 1) ? 135.0: (VAL(MOOD) == 2) ? 50: VAL(L_UPPER_ARM_YROT),
 					   RY = (VAL(MOOD) == 1) ? 135.0: (VAL(MOOD) == 2) ? 50: VAL(R_UPPER_ARM_YROT),
 					   LUX = (VAL(MOOD) == 2) ? -22.5: VAL(L_UPPER_ARM_XROT),
