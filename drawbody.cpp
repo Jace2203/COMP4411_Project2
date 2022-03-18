@@ -54,7 +54,7 @@ void drawHead()
     glPopMatrix();
 }
 
-void drawArmL(double upper_y, double upper_z, double lower_x, double upper_x, MetaballContainer* hand, int lod)
+void drawArmR(double upper_y, double upper_z, double lower_x, double upper_x, MetaballContainer* hand, int lod)
 {
     glPushMatrix();
 		glTranslated(-0.5, 0.0, torso_height);
@@ -88,7 +88,7 @@ void drawArmL(double upper_y, double upper_z, double lower_x, double upper_x, Me
 	glPopMatrix();
 }
 
-void drawArmR(double upper_y, double upper_z, double lower_x, double upper_x, MetaballContainer* hand, int lod)
+void drawArmL(double upper_y, double upper_z, double lower_x, double upper_x, MetaballContainer* hand, int lod)
 {
 	glPushMatrix();
 		glTranslated(0.5, 0.0, torso_height);
