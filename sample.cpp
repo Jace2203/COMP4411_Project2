@@ -150,6 +150,10 @@ void SampleModel::draw()
 	lightPosition0[1] = VAL(LIGHTY);
 	lightPosition0[2] = VAL(LIGHTZ);
 
+	lightDiffuse0[0] = VAL(LIGHTR);
+	lightDiffuse0[1] = VAL(LIGHTG);
+	lightDiffuse0[2] = VAL(LIGHTB);
+	
 	glLightfv( GL_LIGHT0, GL_POSITION, lightPosition0 );
     glLightfv( GL_LIGHT0, GL_DIFFUSE, lightDiffuse0 );
 
@@ -253,8 +257,8 @@ void SampleModel::draw()
 			{
 				drawHead();
 
-				double LZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ?  45.0: (VAL(MOOD) == 2) ? -45.0: VAL(L_UPPER_ARM_ZROT),
-					   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ? -45.0: (VAL(MOOD) == 2) ?  45.0: VAL(R_UPPER_ARM_ZROT),
+				double LZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ? -45.0: (VAL(MOOD) == 2) ?  45.0: VAL(L_UPPER_ARM_ZROT),
+					   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ?  45.0: (VAL(MOOD) == 2) ? -45.0: VAL(R_UPPER_ARM_ZROT),
 					   LY = (VAL(MOOD) == 1) ? 135.0: (VAL(MOOD) == 2) ? 50: VAL(L_UPPER_ARM_YROT),
 					   RY = (VAL(MOOD) == 1) ? 135.0: (VAL(MOOD) == 2) ? 50: VAL(R_UPPER_ARM_YROT),
 					   LUX = (VAL(MOOD) == 2) ? -22.5: VAL(L_UPPER_ARM_XROT),
@@ -265,8 +269,8 @@ void SampleModel::draw()
 				if (VAL(SHOW_TORUS))
 					drawtorus(&torus, 21, RY, RUX);
 
-				drawArmL(LY, LZ, LLAX, LUX, metaball_container[0], lod - 1);
-				drawArmR(RY, RZ, RLAX, RUX, metaball_container[1], lod - 1);
+				drawArmL(LY, LZ, LLAX, LUX, metaball_container[1], lod - 1);
+				drawArmR(RY, RZ, RLAX, RUX, metaball_container[0], lod - 1);
 
 				if (ModelerApplication::Instance()->IsAnimating())
 				{
@@ -323,9 +327,13 @@ int main()
 	controls[LOD] = ModelerControl("Change Level of Detail", 0, 4, 1, 4);
 	
 	// Light
-	controls[LIGHTX] = ModelerControl("LIGHTX", -10, 10, 1, 4);
-	controls[LIGHTY] = ModelerControl("LIGHTY", -10, 10, 1, 2);
-	controls[LIGHTZ] = ModelerControl("LIGHTZ", -10, 10, 1, 4);
+	controls[LIGHTX] = ModelerControl("Light X", -10, 10, 1, 4);
+	controls[LIGHTY] = ModelerControl("Light Y", -10, 10, 1, 2);
+	controls[LIGHTZ] = ModelerControl("Light Z", -10, 10, 1, 4);
+
+	controls[LIGHTR] = ModelerControl("Light R", 0, 1, 0.01, 1);
+	controls[LIGHTG] = ModelerControl("Light G", 0, 1, 0.01, 1);
+	controls[LIGHTB] = ModelerControl("Light B", 0, 1, 0.01, 1);
 
 	// L system
 	controls[DLS] = ModelerControl("Display L-system", 0, 1, 1, 0);
