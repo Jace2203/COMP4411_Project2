@@ -114,4 +114,6 @@ void calpoint(Point* ctrl, Point** pts, int num_pts, int num_t);
 void drawtorus(Point*** draw_pts, int num_t, double RY, double RUX);
 void drawCurve(Point*** draw_pts, int num_t, double back_y);
 
+void drawhair(Point*** draw_pts, int num_t);
+
 #endif

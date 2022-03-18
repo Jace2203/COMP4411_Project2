@@ -122,6 +122,7 @@ ModelerView* createSampleModel(int x, int y, int w, int h, char *label)
 
 Point** draw_pts = nullptr;
 Point** torus = nullptr;
+Point** hair = nullptr;
 
 double ani_height = -(head_size + torso_height)/5,
 	   cur_height = 0,
@@ -228,6 +229,11 @@ void SampleModel::draw()
 	m_camera->setModelTorso(Vec3f(VAL(XPOS), VAL(YPOS), VAL(ZPOS)));
 	// (*metaball_container)[1]->setCenter(Vec3d(VAL(XPOS), 0, 0));
 	// metaball_container->render();
+
+	glPushMatrix();
+		glTranslated(3, 0, 0);
+		drawhair(&hair, 41);
+	glPopMatrix();
 	
 	glPushMatrix();
 		glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
