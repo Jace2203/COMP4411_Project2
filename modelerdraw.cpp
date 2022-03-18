@@ -456,7 +456,7 @@ void drawTriangle( double x1, double y1, double z1,
     }
 }
 
-void drawtorus(Point*** draw_pts, int num_t, double theta)
+void drawtorus(Point*** draw_pts, int num_t, double RY, double RUX)
 {
     if (!*draw_pts)
     {
@@ -584,11 +584,15 @@ void drawtorus(Point*** draw_pts, int num_t, double theta)
 	// else
 	// {
         glPushMatrix();
-        glTranslated(0.50, -0.1, 1.2);
+        //glTranslated(0.5, -0.1, 0.5);
+
+        glTranslated(0.5, -0.0, 1.2);
         glRotated(90, 0.0, 1.0, 0.0);
 
-        glRotated(-theta, 0.0, 1.0, 0.0);
-        glTranslated(0.2, 0.0, 0.0);
+        glRotated(-RUX, 0.0, 0.0, 1.0);
+
+        glRotated(-RY, 0.0, 1.0, 0.0);
+        glTranslated(0.2, -0.1, 0.0);
 
 		for(int i = 0; i < num_t; ++i)
 		{
@@ -789,7 +793,7 @@ void drawCurve(Point*** draw_pts, int num_t, double back_y)
         //glTranslated(0.0, 0.8, 1.65);
 
         //glRotated(180.0, 0.0, 1.0, 0.0);
-        glTranslated(0.0, 0.3, 0.45);
+        glTranslated(0.0, 0.25, 0.45);
 
         glRotated(back_y, 0.0, 1.0, 0.0);
         glTranslated(0, 0.5, 1.2);

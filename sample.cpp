@@ -257,7 +257,7 @@ void SampleModel::draw()
 					   RLAX = (VAL(MOOD) == 2) ? 95.0: VAL(R_LOWER_ARM_XROT);
 
 				if (VAL(SHOW_TORUS))
-					drawtorus(&torus, 21, RY);
+					drawtorus(&torus, 21, RY, RUX);
 
 				drawArmL(LY, LZ, LLAX, LUX, metaball_container[0], lod - 1);
 				drawArmR(RY, RZ, RLAX, RUX, metaball_container[1], lod - 1);

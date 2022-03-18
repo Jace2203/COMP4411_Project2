@@ -111,7 +111,7 @@ void drawTriangle( double x1, double y1, double z1,
 void setcircle(double inner, double outer);
 void calpoint(Point* ctrl, Point** pts, int num_pts, int num_t);
 
-void drawtorus(Point*** draw_pts, int num_t, double back_y);
+void drawtorus(Point*** draw_pts, int num_t, double RY, double RUX);
 void drawCurve(Point*** draw_pts, int num_t, double back_y);
 
 #endif
