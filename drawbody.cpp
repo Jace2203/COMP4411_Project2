@@ -400,14 +400,14 @@ void drawHair()
 
 void initTexture()
 {
-    char image[][30] = {
-        "black.bmp",
-        "pink.bmp",
-        "leg_top.bmp",
-        "leg_down.bmp",
-        "body2.bmp",
-        "hand_left.bmp",
-        "hand_right.bmp"
+    char image[][50] = {
+        "texture/black.bmp",
+        "texture/pink.bmp",
+        "texture/leg_top.bmp",
+        "texture/leg_down.bmp",
+        "texture/body2.bmp",
+        "texture/hand_left.bmp",
+        "texture/hand_right.bmp"
     };
 
     for(int i = 0; i < NUM; ++i)
